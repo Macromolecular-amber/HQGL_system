@@ -6,20 +6,20 @@ import request from '@/utils/request'
 
 /** 单位下拉列表 */
 export function getUnitList() {
-  return request.get('/sys/unit/list')
+  return request.get('/api/sys/unit/list')
 }
 
 /** 当前登录用户信息 */
 export function getCurrentUser() {
-  return request.get('/sys/user/current')
+  return request.get('/api/sys/user/current')
 }
 
 /** 驾驶员列表 */
 export function getDrivers() {
-  return request.get('/sys/user/drivers')
+  return request.get('/api/sys/user/drivers')
 }
 
 /** 获取保洁员列表（角色 CLEANER） */
 export function getCleaners() {
-  return request.get('/sys/user/cleaners')
+  return request.get('/api/sys/user/cleaners')
 }
