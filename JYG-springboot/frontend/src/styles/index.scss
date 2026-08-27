@@ -1,0 +1,85 @@
+// 全局变量
+:root {
+  --primary-start: #667eea;
+  --primary-end: #764ba2;
+  --primary: #667eea;
+  --primary-light: #f0f4ff;
+  --text-primary: #2c3e50;
+  --text-secondary: #606266;
+  --bg-page: #f0f2f5;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --border-radius: 12px;
+
+  // 统一 Element Plus 主题色为品牌渐变主色（浅色变体按 EP 公式计算）
+  --el-color-primary: #667eea;
+  --el-color-primary-light-3: #94a5f0;
+  --el-color-primary-light-5: #b3bff5;
+  --el-color-primary-light-7: #d1d8f9;
+  --el-color-primary-light-8: #e0e5fb;
+  --el-color-primary-light-9: #f0f2fd;
+  --el-color-primary-dark-2: #5265bb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
+}
+
+// 卡片样式
+.el-card {
+  border-radius: var(--border-radius) !important;
+  box-shadow: var(--card-shadow) !important;
+  border: none !important;
+  transition: all 0.25s ease;
+}
+.el-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10) !important;
+}
+
+// 按钮渐变（背景在原色与浅色之间，字体颜色不变）
+.el-button--primary {
+  background: linear-gradient(135deg, #798eec, #8761ad) !important;
+  border: none !important;
+}
+.el-button--primary:hover {
+  opacity: 0.85;
+}
+.el-button--primary.is-plain {
+  background: transparent !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+}
+
+// 表格操作列链接按钮：主色调浅（60% 主色），hover 恢复主题色
+.el-table .el-button.is-link {
+  color: #a3b2f2;
+}
+.el-table .el-button.is-link:hover {
+  color: #667eea;
+}
+
+// 输入框聚焦
+.el-input__inner:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+// 表格
+.el-table th.el-table__cell {
+  background-color: #f7f9fc !important;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background-color: #fafbfc;
+}
+.el-table__body tr:hover > td.el-table__cell {
+  background-color: var(--primary-light) !important;
+}
+
+// 侧边栏（由 Layout 组件控制，这里保留全局变量）

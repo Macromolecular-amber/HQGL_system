@@ -1,0 +1,645 @@
+table_name|column_name|data_type|character_maximum_length|is_nullable|column_default
+cl_apply_order|id|bigint||NO|nextval('cl_apply_order_id_seq'::regclass)
+cl_apply_order|apply_no|character varying|50|NO|
+cl_apply_order|applicant_id|bigint||NO|
+cl_apply_order|applicant_name|character varying|50|YES|
+cl_apply_order|applicant_unit_id|bigint||NO|
+cl_apply_order|applicant_phone|character varying|20|YES|
+cl_apply_order|purpose|character varying|200|NO|
+cl_apply_order|destination|character varying|200|NO|
+cl_apply_order|start_time|timestamp with time zone||NO|
+cl_apply_order|end_time|timestamp with time zone||NO|
+cl_apply_order|passenger_count|integer||NO|
+cl_apply_order|required_vehicle_type|character varying|20|YES|
+cl_apply_order|planned_route|text||YES|
+cl_apply_order|planned_mileage|numeric||YES|
+cl_apply_order|apply_status|character varying|20|YES|'PENDING'::character varying
+cl_apply_order|auto_approve|boolean||YES|false
+cl_apply_order|reject_reason|text||YES|
+cl_apply_order|dispatch_order_id|bigint||YES|
+cl_apply_order|process_instance_id|character varying|50|YES|
+cl_apply_order|create_by|bigint||YES|
+cl_apply_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_apply_order|update_by|bigint||YES|
+cl_apply_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_apply_order|is_deleted|boolean||YES|false
+cl_cost_detail|id|bigint||NO|nextval('cl_cost_detail_id_seq'::regclass)
+cl_cost_detail|vehicle_id|bigint||NO|
+cl_cost_detail|cost_type|character varying|30|NO|
+cl_cost_detail|cost_amount|numeric||NO|
+cl_cost_detail|cost_time|timestamp with time zone||NO|
+cl_cost_detail|cost_desc|text||YES|
+cl_cost_detail|biz_order_no|character varying|50|YES|
+cl_cost_detail|biz_type|character varying|30|YES|
+cl_cost_detail|approval_status|character varying|20|YES|'PENDING'::character varying
+cl_cost_detail|process_instance_id|character varying|50|YES|
+cl_cost_detail|attachment_urls|text||YES|
+cl_cost_detail|create_by|bigint||YES|
+cl_cost_detail|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_cost_detail|update_by|bigint||YES|
+cl_cost_detail|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_cost_detail|is_deleted|boolean||YES|false
+cl_dispatch_order|id|bigint||NO|nextval('cl_dispatch_order_id_seq'::regclass)
+cl_dispatch_order|dispatch_no|character varying|50|NO|
+cl_dispatch_order|apply_id|bigint||NO|
+cl_dispatch_order|vehicle_id|bigint||NO|
+cl_dispatch_order|plate_number|character varying|20|YES|
+cl_dispatch_order|driver_id|bigint||NO|
+cl_dispatch_order|driver_name|character varying|50|YES|
+cl_dispatch_order|driver_phone|character varying|20|YES|
+cl_dispatch_order|scheduled_start|timestamp with time zone||NO|
+cl_dispatch_order|scheduled_end|timestamp with time zone||NO|
+cl_dispatch_order|actual_start|timestamp with time zone||YES|
+cl_dispatch_order|actual_end|timestamp with time zone||YES|
+cl_dispatch_order|actual_mileage|numeric||YES|
+cl_dispatch_order|dispatch_status|character varying|20|YES|'WAITING'::character varying
+cl_dispatch_order|is_emergency|boolean||YES|false
+cl_dispatch_order|emergency_reason|character varying|200|YES|
+cl_dispatch_order|remark|character varying|500|YES|
+cl_dispatch_order|create_by|bigint||YES|
+cl_dispatch_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_dispatch_order|update_by|bigint||YES|
+cl_dispatch_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_dispatch_order|is_deleted|boolean||YES|false
+cl_repair_order|id|bigint||NO|nextval('cl_repair_order_id_seq'::regclass)
+cl_repair_order|repair_no|character varying|50|NO|
+cl_repair_order|vehicle_id|bigint||NO|
+cl_repair_order|plate_number|character varying|20|YES|
+cl_repair_order|repair_type|character varying|20|NO|
+cl_repair_order|fault_desc|text||NO|
+cl_repair_order|fault_photos|text||YES|
+cl_repair_order|urgency_level|character varying|20|YES|
+cl_repair_order|repair_shop_id|bigint||YES|
+cl_repair_order|repair_shop_name|character varying|100|YES|
+cl_repair_order|estimated_cost|numeric||YES|
+cl_repair_order|actual_cost|numeric||YES|
+cl_repair_order|parts_detail|jsonb||YES|
+cl_repair_order|labor_cost|numeric||YES|
+cl_repair_order|order_status|character varying|20|YES|'PENDING'::character varying
+cl_repair_order|process_instance_id|character varying|50|YES|
+cl_repair_order|repair_start|timestamp with time zone||YES|
+cl_repair_order|repair_end|timestamp with time zone||YES|
+cl_repair_order|repair_photos|text||YES|
+cl_repair_order|accept_user_id|bigint||YES|
+cl_repair_order|accept_time|timestamp with time zone||YES|
+cl_repair_order|accept_result|character varying|20|YES|
+cl_repair_order|accept_remark|text||YES|
+cl_repair_order|repair_mileage|numeric||YES|
+cl_repair_order|create_by|bigint||YES|
+cl_repair_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_repair_order|update_by|bigint||YES|
+cl_repair_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_repair_order|is_deleted|boolean||YES|false
+cl_vehicle_archive|id|bigint||NO|nextval('cl_vehicle_archive_id_seq'::regclass)
+cl_vehicle_archive|plate_number|character varying|20|NO|
+cl_vehicle_archive|brand_model|character varying|100|NO|
+cl_vehicle_archive|vehicle_type|character varying|20|NO|
+cl_vehicle_archive|vehicle_type_name|character varying|20|YES|
+cl_vehicle_archive|engine_no|character varying|50|YES|
+cl_vehicle_archive|frame_no|character varying|50|YES|
+cl_vehicle_archive|seat_count|integer||NO|
+cl_vehicle_archive|displacement|numeric||YES|
+cl_vehicle_archive|color|character varying|20|YES|
+cl_vehicle_archive|purchase_date|date||YES|
+cl_vehicle_archive|purchase_price|numeric||YES|
+cl_vehicle_archive|supplier|character varying|100|YES|
+cl_vehicle_archive|unit_id|bigint||NO|
+cl_vehicle_archive|unit_name|character varying|100|YES|
+cl_vehicle_archive|dept_id|bigint||YES|
+cl_vehicle_archive|establishment_id|bigint||YES|
+cl_vehicle_archive|is_establishment|boolean||YES|true
+cl_vehicle_archive|vehicle_status|character varying|20|NO|'AVAILABLE'::character varying
+cl_vehicle_archive|current_mileage|numeric||YES|0
+cl_vehicle_archive|last_maintenance_mileage|numeric||YES|
+cl_vehicle_archive|next_maintenance_mileage|numeric||YES|
+cl_vehicle_archive|insurance_company|character varying|100|YES|
+cl_vehicle_archive|insurance_policy_no|character varying|50|YES|
+cl_vehicle_archive|insurance_start|date||YES|
+cl_vehicle_archive|insurance_end|date||YES|
+cl_vehicle_archive|photo_urls|text||YES|
+cl_vehicle_archive|remark|character varying|500|YES|
+cl_vehicle_archive|create_by|bigint||YES|
+cl_vehicle_archive|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_vehicle_archive|update_by|bigint||YES|
+cl_vehicle_archive|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+cl_vehicle_archive|is_deleted|boolean||YES|false
+gc_asset_card|id|bigint||NO|nextval('gc_asset_card_id_seq'::regclass)
+gc_asset_card|asset_code|character varying|50|NO|
+gc_asset_card|asset_name|character varying|200|NO|
+gc_asset_card|category_code|character varying|20|NO|
+gc_asset_card|category_name|character varying|50|YES|
+gc_asset_card|spec_model|character varying|100|YES|
+gc_asset_card|brand|character varying|50|YES|
+gc_asset_card|quantity|integer||YES|1
+gc_asset_card|original_value|numeric||NO|
+gc_asset_card|residual_rate|numeric||YES|5.00
+gc_asset_card|current_value|numeric||YES|
+gc_asset_card|accumulated_depreciation|numeric||YES|0.00
+gc_asset_card|purchase_date|date||YES|
+gc_asset_card|useful_life|integer||YES|
+gc_asset_card|depreciation_method|character varying|20|YES|'STRAIGHT_LINE'::character varying
+gc_asset_card|asset_status|character varying|20|NO|
+gc_asset_card|location|character varying|200|YES|
+gc_asset_card|warehouse_id|bigint||YES|
+gc_asset_card|owner_unit_id|bigint||NO|
+gc_asset_card|owner_unit_name|character varying|100|YES|
+gc_asset_card|current_use_unit_id|bigint||YES|
+gc_asset_card|qr_code_url|character varying|255|YES|
+gc_asset_card|rfid_tag|character varying|50|YES|
+gc_asset_card|photo_urls|text||YES|
+gc_asset_card|attachment_urls|text||YES|
+gc_asset_card|description|text||YES|
+gc_asset_card|remark|character varying|500|YES|
+gc_asset_card|create_by|bigint||YES|
+gc_asset_card|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_asset_card|update_by|bigint||YES|
+gc_asset_card|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_asset_card|is_deleted|boolean||YES|false
+gc_borrow_detail|id|bigint||NO|nextval('gc_borrow_detail_id_seq'::regclass)
+gc_borrow_detail|borrow_order_id|bigint||NO|
+gc_borrow_detail|asset_id|bigint||NO|
+gc_borrow_detail|asset_code|character varying|50|YES|
+gc_borrow_detail|asset_name|character varying|200|YES|
+gc_borrow_detail|borrow_quantity|integer||NO|1
+gc_borrow_detail|actual_quantity|integer||YES|
+gc_borrow_detail|return_quantity|integer||YES|
+gc_borrow_detail|detail_status|character varying|20|YES|'PENDING'::character varying
+gc_borrow_detail|return_time|timestamp with time zone||YES|
+gc_borrow_detail|accept_status|character varying|20|YES|
+gc_borrow_detail|accept_remark|text||YES|
+gc_borrow_detail|damage_description|text||YES|
+gc_borrow_detail|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_borrow_detail|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_borrow_order|id|bigint||NO|nextval('gc_borrow_order_id_seq'::regclass)
+gc_borrow_order|order_no|character varying|50|NO|
+gc_borrow_order|applicant_id|bigint||NO|
+gc_borrow_order|applicant_name|character varying|50|YES|
+gc_borrow_order|applicant_unit_id|bigint||NO|
+gc_borrow_order|applicant_unit_name|character varying|100|YES|
+gc_borrow_order|applicant_phone|character varying|20|YES|
+gc_borrow_order|borrow_start|timestamp with time zone||NO|
+gc_borrow_order|borrow_end|timestamp with time zone||NO|
+gc_borrow_order|borrow_reason|text||NO|
+gc_borrow_order|borrow_purpose|character varying|50|YES|
+gc_borrow_order|order_status|character varying|20|NO|'DRAFT'::character varying
+gc_borrow_order|approval_status|character varying|20|YES|
+gc_borrow_order|current_approver_id|bigint||YES|
+gc_borrow_order|current_approver_node|character varying|100|YES|
+gc_borrow_order|warehouse_out_time|timestamp with time zone||YES|
+gc_borrow_order|warehouse_in_time|timestamp with time zone||YES|
+gc_borrow_order|logistics_order_no|character varying|50|YES|
+gc_borrow_order|logistics_status|character varying|20|YES|
+gc_borrow_order|extension_count|integer||YES|0
+gc_borrow_order|max_extension|integer||YES|2
+gc_borrow_order|process_instance_id|character varying|50|YES|
+gc_borrow_order|create_by|bigint||YES|
+gc_borrow_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_borrow_order|update_by|bigint||YES|
+gc_borrow_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_borrow_order|is_deleted|boolean||YES|false
+gc_logistics_order|id|bigint||NO|nextval('gc_logistics_order_id_seq'::regclass)
+gc_logistics_order|logistics_no|character varying|50|NO|
+gc_logistics_order|business_type|character varying|20|NO|
+gc_logistics_order|business_order_no|character varying|50|NO|
+gc_logistics_order|delivery_method|character varying|20|NO|
+gc_logistics_order|sender_name|character varying|50|YES|
+gc_logistics_order|sender_phone|character varying|20|YES|
+gc_logistics_order|sender_address|character varying|200|YES|
+gc_logistics_order|receiver_name|character varying|50|NO|
+gc_logistics_order|receiver_phone|character varying|20|YES|
+gc_logistics_order|receiver_address|character varying|200|NO|
+gc_logistics_order|cargo_desc|text||YES|
+gc_logistics_order|cargo_weight|numeric||YES|
+gc_logistics_order|cargo_volume|numeric||YES|
+gc_logistics_order|logistics_status|character varying|20|YES|'PENDING'::character varying
+gc_logistics_order|pickup_time|timestamp with time zone||YES|
+gc_logistics_order|delivery_time|timestamp with time zone||YES|
+gc_logistics_order|sign_time|timestamp with time zone||YES|
+gc_logistics_order|sign_person|character varying|50|YES|
+gc_logistics_order|sign_photo_url|character varying|255|YES|
+gc_logistics_order|third_party_tracking_no|character varying|50|YES|
+gc_logistics_order|third_party_platform|character varying|50|YES|
+gc_logistics_order|freight_amount|numeric||YES|
+gc_logistics_order|create_by|bigint||YES|
+gc_logistics_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_logistics_order|update_by|bigint||YES|
+gc_logistics_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_logistics_order|is_deleted|boolean||YES|false
+gc_return_order|id|bigint||NO|nextval('gc_return_order_id_seq'::regclass)
+gc_return_order|return_no|character varying|50|NO|
+gc_return_order|borrow_order_id|bigint||NO|
+gc_return_order|return_applicant_id|bigint||NO|
+gc_return_order|return_applicant_unit_id|bigint||NO|
+gc_return_order|plan_return_time|timestamp with time zone||YES|
+gc_return_order|actual_return_time|timestamp with time zone||YES|
+gc_return_order|accept_user_ids|text||YES|
+gc_return_order|accept_time|timestamp with time zone||YES|
+gc_return_order|accept_result|character varying|20|YES|
+gc_return_order|accept_remark|text||YES|
+gc_return_order|accept_photos|text||YES|
+gc_return_order|damage_info|text||YES|
+gc_return_order|damage_responsibility|character varying|50|YES|
+gc_return_order|repair_cost|numeric||YES|
+gc_return_order|compensation_amount|numeric||YES|
+gc_return_order|return_status|character varying|20|NO|'PENDING'::character varying
+gc_return_order|create_by|bigint||YES|
+gc_return_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_return_order|update_by|bigint||YES|
+gc_return_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_return_order|is_deleted|boolean||YES|false
+gc_transfer_order|id|bigint||NO|nextval('gc_transfer_order_id_seq'::regclass)
+gc_transfer_order|order_no|character varying|50|NO|
+gc_transfer_order|transfer_type|character varying|20|NO|
+gc_transfer_order|asset_count|integer||NO|
+gc_transfer_order|total_value|numeric||YES|
+gc_transfer_order|applicant_unit_id|bigint||NO|
+gc_transfer_order|receive_unit_id|bigint||YES|
+gc_transfer_order|apply_reason|text||NO|
+gc_transfer_order|dispose_method|character varying|30|YES|
+gc_transfer_order|appraisal_org|character varying|100|YES|
+gc_transfer_order|appraisal_value|numeric||YES|
+gc_transfer_order|appraisal_report_url|character varying|255|YES|
+gc_transfer_order|appraisal_time|timestamp with time zone||YES|
+gc_transfer_order|order_status|character varying|20|YES|'PENDING'::character varying
+gc_transfer_order|exec_time|timestamp with time zone||YES|
+gc_transfer_order|exec_result|text||YES|
+gc_transfer_order|income_amount|numeric||YES|0.00
+gc_transfer_order|expense_amount|numeric||YES|0.00
+gc_transfer_order|net_profit|numeric||YES|
+gc_transfer_order|process_instance_id|character varying|50|YES|
+gc_transfer_order|create_by|bigint||YES|
+gc_transfer_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_transfer_order|update_by|bigint||YES|
+gc_transfer_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gc_transfer_order|is_deleted|boolean||YES|false
+gy_cleaning_order|id|bigint||NO|nextval('gy_cleaning_order_id_seq'::regclass)
+gy_cleaning_order|cleaning_no|character varying|50|NO|
+gy_cleaning_order|room_id|bigint||NO|
+gy_cleaning_order|room_no|character varying|20|YES|
+gy_cleaning_order|applicant_id|bigint||NO|
+gy_cleaning_order|applicant_name|character varying|50|YES|
+gy_cleaning_order|cleaning_time|timestamp with time zone||NO|
+gy_cleaning_order|cleaning_scope|text||YES|
+gy_cleaning_order|cleaning_requirement|text||YES|
+gy_cleaning_order|order_status|character varying|20|YES|'PENDING'::character varying
+gy_cleaning_order|assignee_id|bigint||YES|
+gy_cleaning_order|assignee_name|character varying|50|YES|
+gy_cleaning_order|assignee_company|character varying|100|YES|
+gy_cleaning_order|assign_time|timestamp with time zone||YES|
+gy_cleaning_order|execute_time|timestamp with time zone||YES|
+gy_cleaning_order|execute_photos|text||YES|
+gy_cleaning_order|accept_user_id|bigint||YES|
+gy_cleaning_order|accept_time|timestamp with time zone||YES|
+gy_cleaning_order|accept_result|character varying|20|YES|
+gy_cleaning_order|accept_remark|text||YES|
+gy_cleaning_order|accept_score|integer||YES|
+gy_cleaning_order|settle_amount|numeric||YES|
+gy_cleaning_order|settle_status|character varying|20|YES|
+gy_cleaning_order|create_by|bigint||YES|
+gy_cleaning_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_cleaning_order|update_by|bigint||YES|
+gy_cleaning_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_cleaning_order|is_deleted|boolean||YES|false
+gy_occupant|id|bigint||NO|nextval('gy_occupant_id_seq'::regclass)
+gy_occupant|occupant_name|character varying|50|NO|
+gy_occupant|occupant_type|character varying|20|NO|
+gy_occupant|id_card|character varying|18|YES|
+gy_occupant|phone|character varying|20|YES|
+gy_occupant|unit_id|bigint||YES|
+gy_occupant|unit_name|character varying|100|YES|
+gy_occupant|position|character varying|50|YES|
+gy_occupant|attendant_info|jsonb||YES|
+gy_occupant|room_id|bigint||NO|
+gy_occupant|room_no|character varying|20|YES|
+gy_occupant|checkin_time|timestamp with time zone||NO|
+gy_occupant|expected_leave_time|timestamp with time zone||YES|
+gy_occupant|actual_leave_time|timestamp with time zone||YES|
+gy_occupant|rent_amount|numeric||YES|0
+gy_occupant|rent_paid_status|character varying|20|YES|'PAID'::character varying
+gy_occupant|assign_method|character varying|20|NO|
+gy_occupant|approval_file_url|character varying|255|YES|
+gy_occupant|occupant_status|character varying|20|NO|'ACTIVE'::character varying
+gy_occupant|apply_id|bigint||YES|
+gy_occupant|process_instance_id|character varying|50|YES|
+gy_occupant|create_by|bigint||YES|
+gy_occupant|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_occupant|update_by|bigint||YES|
+gy_occupant|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_occupant|is_deleted|boolean||YES|false
+gy_repair_order|id|bigint||NO|nextval('gy_repair_order_id_seq'::regclass)
+gy_repair_order|repair_no|character varying|50|NO|
+gy_repair_order|room_id|bigint||NO|
+gy_repair_order|room_no|character varying|20|YES|
+gy_repair_order|applicant_id|bigint||NO|
+gy_repair_order|applicant_name|character varying|50|YES|
+gy_repair_order|applicant_phone|character varying|20|YES|
+gy_repair_order|fault_location|character varying|100|YES|
+gy_repair_order|fault_desc|text||NO|
+gy_repair_order|fault_photos|text||YES|
+gy_repair_order|urgency_level|character varying|20|YES|
+gy_repair_order|cost_type|character varying|20|NO|
+gy_repair_order|estimated_cost|numeric||YES|
+gy_repair_order|actual_cost|numeric||YES|
+gy_repair_order|quote_detail|jsonb||YES|
+gy_repair_order|order_status|character varying|20|YES|'PENDING'::character varying
+gy_repair_order|process_instance_id|character varying|50|YES|
+gy_repair_order|repair_shop_id|bigint||YES|
+gy_repair_order|repair_shop_name|character varying|100|YES|
+gy_repair_order|repair_start|timestamp with time zone||YES|
+gy_repair_order|repair_end|timestamp with time zone||YES|
+gy_repair_order|repair_photos|text||YES|
+gy_repair_order|accept_user_id|bigint||YES|
+gy_repair_order|accept_time|timestamp with time zone||YES|
+gy_repair_order|accept_result|character varying|20|YES|
+gy_repair_order|accept_remark|text||YES|
+gy_repair_order|accept_photos|text||YES|
+gy_repair_order|create_by|bigint||YES|
+gy_repair_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_repair_order|update_by|bigint||YES|
+gy_repair_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_repair_order|is_deleted|boolean||YES|false
+gy_room|id|bigint||NO|nextval('gy_room_id_seq'::regclass)
+gy_room|building|character varying|20|NO|
+gy_room|floor|integer||NO|
+gy_room|room_no|character varying|20|NO|
+gy_room|room_type|character varying|20|NO|
+gy_room|layout|character varying|20|YES|
+gy_room|area|numeric||YES|
+gy_room|orientation|character varying|10|YES|
+gy_room|facilities|jsonb||YES|
+gy_room|room_status|character varying|20|NO|'IDLE'::character varying
+gy_room|current_occupant_id|bigint||YES|
+gy_room|current_occupant_name|character varying|50|YES|
+gy_room|current_unit_id|bigint||YES|
+gy_room|asset_ids|text||YES|
+gy_room|remark|character varying|500|YES|
+gy_room|create_by|bigint||YES|
+gy_room|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_room|update_by|bigint||YES|
+gy_room|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+gy_room|is_deleted|boolean||YES|false
+pay_account|id|bigint||NO|nextval('pay_account_id_seq'::regclass)
+pay_account|user_id|bigint||NO|
+pay_account|account_type|character varying|20|NO|
+pay_account|account_no|character varying|50|NO|
+pay_account|balance|numeric||YES|0.00
+pay_account|frozen_amount|numeric||YES|0.00
+pay_account|card_no|character varying|50|YES|
+pay_account|card_status|character varying|20|YES|'ACTIVE'::character varying
+pay_account|account_status|character varying|20|YES|'ACTIVE'::character varying
+pay_account|last_transaction_time|timestamp with time zone||YES|
+pay_account|create_by|bigint||YES|
+pay_account|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+pay_account|update_by|bigint||YES|
+pay_account|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+pay_account|is_deleted|boolean||YES|false
+pay_transaction|id|bigint||NO|nextval('pay_transaction_id_seq'::regclass)
+pay_transaction|transaction_no|character varying|50|NO|
+pay_transaction|external_transaction_no|character varying|50|YES|
+pay_transaction|user_id|bigint||NO|
+pay_transaction|account_type|character varying|20|NO|
+pay_transaction|account_no|character varying|50|YES|
+pay_transaction|card_no|character varying|50|YES|
+pay_transaction|transaction_type|character varying|20|NO|
+pay_transaction|amount|numeric||NO|
+pay_transaction|balance_before|numeric||YES|
+pay_transaction|balance_after|numeric||YES|
+pay_transaction|pay_method|character varying|20|NO|
+pay_transaction|pay_status|character varying|20|YES|'PENDING'::character varying
+pay_transaction|biz_module|character varying|30|YES|
+pay_transaction|biz_order_no|character varying|50|YES|
+pay_transaction|scene|character varying|50|YES|
+pay_transaction|remark|character varying|255|YES|
+pay_transaction|pay_time|timestamp with time zone||YES|
+pay_transaction|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_inventory_record|id|bigint||NO|nextval('st_inventory_record_id_seq'::regclass)
+st_inventory_record|material_id|bigint||NO|
+st_inventory_record|material_code|character varying|50|YES|
+st_inventory_record|material_name|character varying|100|YES|
+st_inventory_record|record_type|character varying|20|NO|
+st_inventory_record|quantity|numeric||NO|
+st_inventory_record|unit_price|numeric||YES|
+st_inventory_record|total_amount|numeric||YES|
+st_inventory_record|business_order_no|character varying|50|YES|
+st_inventory_record|business_type|character varying|30|YES|
+st_inventory_record|stock_before|numeric||YES|
+st_inventory_record|stock_after|numeric||YES|
+st_inventory_record|operator_id|bigint||YES|
+st_inventory_record|operator_name|character varying|50|YES|
+st_inventory_record|remark|character varying|500|YES|
+st_inventory_record|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_material|id|bigint||NO|nextval('st_material_id_seq'::regclass)
+st_material|material_code|character varying|50|NO|
+st_material|material_name|character varying|100|NO|
+st_material|category|character varying|50|NO|
+st_material|spec|character varying|50|YES|
+st_material|unit|character varying|10|NO|
+st_material|shelf_life|integer||YES|
+st_material|safety_stock|numeric||YES|0
+st_material|max_stock|numeric||YES|1000
+st_material|current_price|numeric||YES|
+st_material|last_price|numeric||YES|
+st_material|current_stock|numeric||YES|0
+st_material|occupied_stock|numeric||YES|0
+st_material|remark|character varying|500|YES|
+st_material|create_by|bigint||YES|
+st_material|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_material|update_by|bigint||YES|
+st_material|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_material|is_deleted|boolean||YES|false
+st_meal_reservation|id|bigint||NO|nextval('st_meal_reservation_id_seq'::regclass)
+st_meal_reservation|user_id|bigint||NO|
+st_meal_reservation|user_name|character varying|50|YES|
+st_meal_reservation|unit_id|bigint||YES|
+st_meal_reservation|unit_name|character varying|100|YES|
+st_meal_reservation|meal_date|date||NO|
+st_meal_reservation|meal_type|character varying|20|NO|
+st_meal_reservation|meal_count|integer||YES|1
+st_meal_reservation|reservation_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_meal_reservation|cancel_time|timestamp with time zone||YES|
+st_meal_reservation|is_cancelled|boolean||YES|false
+st_meal_reservation|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_meal_reservation|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_purchase_detail|id|bigint||NO|nextval('st_purchase_detail_id_seq'::regclass)
+st_purchase_detail|purchase_order_id|bigint||NO|
+st_purchase_detail|material_id|bigint||NO|
+st_purchase_detail|material_code|character varying|50|YES|
+st_purchase_detail|material_name|character varying|100|YES|
+st_purchase_detail|quantity|numeric||NO|
+st_purchase_detail|unit_price|numeric||NO|
+st_purchase_detail|subtotal|numeric||YES|
+st_purchase_detail|received_quantity|numeric||YES|
+st_purchase_detail|receive_time|timestamp with time zone||YES|
+st_purchase_detail|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_purchase_detail|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_purchase_order|id|bigint||NO|nextval('st_purchase_order_id_seq'::regclass)
+st_purchase_order|order_no|character varying|50|NO|
+st_purchase_order|purchase_reason|text||YES|
+st_purchase_order|total_amount|numeric||YES|
+st_purchase_order|material_count|integer||YES|
+st_purchase_order|effective_start|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_purchase_order|effective_end|timestamp with time zone||YES|
+st_purchase_order|is_expired|boolean||YES|false
+st_purchase_order|supplier_id|bigint||YES|
+st_purchase_order|supplier_name|character varying|100|YES|
+st_purchase_order|order_status|character varying|20|YES|'DRAFT'::character varying
+st_purchase_order|process_instance_id|character varying|50|YES|
+st_purchase_order|accept_users|text||YES|
+st_purchase_order|accept_time|timestamp with time zone||YES|
+st_purchase_order|accept_status|character varying|20|YES|
+st_purchase_order|accept_remark|text||YES|
+st_purchase_order|create_by|bigint||YES|
+st_purchase_order|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_purchase_order|update_by|bigint||YES|
+st_purchase_order|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+st_purchase_order|is_deleted|boolean||YES|false
+sys_config|id|bigint||NO|nextval('sys_config_id_seq'::regclass)
+sys_config|config_key|character varying|100|NO|
+sys_config|config_value|text||YES|
+sys_config|config_type|character varying|20|YES|'STRING'::character varying
+sys_config|config_group|character varying|50|YES|
+sys_config|config_desc|character varying|200|YES|
+sys_config|is_public|boolean||YES|true
+sys_config|sort_order|integer||YES|0
+sys_config|create_by|bigint||YES|
+sys_config|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_config|update_by|bigint||YES|
+sys_config|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_config|is_deleted|boolean||YES|false
+sys_operation_log|id|bigint||NO|nextval('sys_operation_log_id_seq'::regclass)
+sys_operation_log|user_id|bigint||YES|
+sys_operation_log|username|character varying|50|YES|
+sys_operation_log|real_name|character varying|50|YES|
+sys_operation_log|module|character varying|50|NO|
+sys_operation_log|operation_type|character varying|30|NO|
+sys_operation_log|operation_desc|character varying|500|YES|
+sys_operation_log|request_url|character varying|255|YES|
+sys_operation_log|request_method|character varying|10|YES|
+sys_operation_log|request_params|text||YES|
+sys_operation_log|response_code|integer||YES|
+sys_operation_log|response_msg|character varying|500|YES|
+sys_operation_log|cost_time|integer||YES|
+sys_operation_log|client_ip|character varying|50|YES|
+sys_operation_log|user_agent|character varying|255|YES|
+sys_operation_log|exception_msg|text||YES|
+sys_operation_log|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_role|id|bigint||NO|nextval('sys_role_id_seq'::regclass)
+sys_role|role_code|character varying|50|NO|
+sys_role|role_name|character varying|50|NO|
+sys_role|role_desc|character varying|200|YES|
+sys_role|role_type|character varying|20|YES|
+sys_role|is_system|boolean||YES|false
+sys_role|sort_order|integer||YES|0
+sys_role|create_by|bigint||YES|
+sys_role|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_role|update_by|bigint||YES|
+sys_role|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_role|is_deleted|boolean||YES|false
+sys_unit|id|bigint||NO|nextval('sys_unit_id_seq'::regclass)
+sys_unit|unit_code|character varying|50|NO|
+sys_unit|unit_name|character varying|100|NO|
+sys_unit|unit_type|character varying|20|YES|
+sys_unit|parent_id|bigint||YES|
+sys_unit|contact_person|character varying|50|YES|
+sys_unit|contact_phone|character varying|20|YES|
+sys_unit|sort_order|integer||YES|0
+sys_unit|remark|character varying|500|YES|
+sys_unit|create_by|bigint||YES|
+sys_unit|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_unit|update_by|bigint||YES|
+sys_unit|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_unit|is_deleted|boolean||YES|false
+sys_user|id|bigint||NO|nextval('sys_user_id_seq'::regclass)
+sys_user|username|character varying|50|NO|
+sys_user|password|character varying|255|NO|
+sys_user|real_name|character varying|50|YES|
+sys_user|phone|character varying|20|YES|
+sys_user|email|character varying|100|YES|
+sys_user|face_id|character varying|100|YES|
+sys_user|face_image_url|character varying|255|YES|
+sys_user|unit_id|bigint||YES|
+sys_user|unit_name|character varying|100|YES|
+sys_user|dept_id|bigint||YES|
+sys_user|position|character varying|50|YES|
+sys_user|user_type|character varying|20|NO|
+sys_user|user_status|character varying|20|YES|'ACTIVE'::character varying
+sys_user|ext_json|jsonb||YES|
+sys_user|create_by|bigint||YES|
+sys_user|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_user|update_by|bigint||YES|
+sys_user|update_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+sys_user|is_deleted|boolean||YES|false
+sys_user_role|id|bigint||NO|nextval('sys_user_role_id_seq'::regclass)
+sys_user_role|user_id|bigint||NO|
+sys_user_role|role_id|bigint||NO|
+sys_user_role|create_by|bigint||YES|
+sys_user_role|create_time|timestamp with time zone||YES|CURRENT_TIMESTAMP
+v_cl_pending_approvals|id|bigint||YES|
+v_cl_pending_approvals|apply_no|character varying|50|YES|
+v_cl_pending_approvals|applicant_id|bigint||YES|
+v_cl_pending_approvals|applicant_name|character varying|50|YES|
+v_cl_pending_approvals|applicant_unit_id|bigint||YES|
+v_cl_pending_approvals|applicant_phone|character varying|20|YES|
+v_cl_pending_approvals|purpose|character varying|200|YES|
+v_cl_pending_approvals|destination|character varying|200|YES|
+v_cl_pending_approvals|start_time|timestamp with time zone||YES|
+v_cl_pending_approvals|end_time|timestamp with time zone||YES|
+v_cl_pending_approvals|passenger_count|integer||YES|
+v_cl_pending_approvals|required_vehicle_type|character varying|20|YES|
+v_cl_pending_approvals|planned_route|text||YES|
+v_cl_pending_approvals|planned_mileage|numeric||YES|
+v_cl_pending_approvals|apply_status|character varying|20|YES|
+v_cl_pending_approvals|auto_approve|boolean||YES|
+v_cl_pending_approvals|reject_reason|text||YES|
+v_cl_pending_approvals|dispatch_order_id|bigint||YES|
+v_cl_pending_approvals|process_instance_id|character varying|50|YES|
+v_cl_pending_approvals|create_by|bigint||YES|
+v_cl_pending_approvals|create_time|timestamp with time zone||YES|
+v_cl_pending_approvals|update_by|bigint||YES|
+v_cl_pending_approvals|update_time|timestamp with time zone||YES|
+v_cl_pending_approvals|is_deleted|boolean||YES|
+v_cl_pending_approvals|plate_number|character varying|20|YES|
+v_cl_pending_approvals|vehicle_type|character varying|20|YES|
+v_cl_pending_approvals|applicant_real_name|character varying|50|YES|
+v_gc_asset_available|id|bigint||YES|
+v_gc_asset_available|asset_code|character varying|50|YES|
+v_gc_asset_available|asset_name|character varying|200|YES|
+v_gc_asset_available|category_code|character varying|20|YES|
+v_gc_asset_available|category_name|character varying|50|YES|
+v_gc_asset_available|spec_model|character varying|100|YES|
+v_gc_asset_available|brand|character varying|50|YES|
+v_gc_asset_available|quantity|integer||YES|
+v_gc_asset_available|original_value|numeric||YES|
+v_gc_asset_available|residual_rate|numeric||YES|
+v_gc_asset_available|current_value|numeric||YES|
+v_gc_asset_available|accumulated_depreciation|numeric||YES|
+v_gc_asset_available|purchase_date|date||YES|
+v_gc_asset_available|useful_life|integer||YES|
+v_gc_asset_available|depreciation_method|character varying|20|YES|
+v_gc_asset_available|asset_status|character varying|20|YES|
+v_gc_asset_available|location|character varying|200|YES|
+v_gc_asset_available|warehouse_id|bigint||YES|
+v_gc_asset_available|owner_unit_id|bigint||YES|
+v_gc_asset_available|owner_unit_name|character varying|100|YES|
+v_gc_asset_available|current_use_unit_id|bigint||YES|
+v_gc_asset_available|qr_code_url|character varying|255|YES|
+v_gc_asset_available|rfid_tag|character varying|50|YES|
+v_gc_asset_available|photo_urls|text||YES|
+v_gc_asset_available|attachment_urls|text||YES|
+v_gc_asset_available|description|text||YES|
+v_gc_asset_available|remark|character varying|500|YES|
+v_gc_asset_available|create_by|bigint||YES|
+v_gc_asset_available|create_time|timestamp with time zone||YES|
+v_gc_asset_available|update_by|bigint||YES|
+v_gc_asset_available|update_time|timestamp with time zone||YES|
+v_gc_asset_available|is_deleted|boolean||YES|
+v_gc_asset_available|owner_unit_name_full|character varying|100|YES|
+v_gc_dashboard_stats|total_assets|bigint||YES|
+v_gc_dashboard_stats|in_stock_count|bigint||YES|
+v_gc_dashboard_stats|borrowed_count|bigint||YES|
+v_gc_dashboard_stats|transferred_count|bigint||YES|
+v_gc_dashboard_stats|disposed_count|bigint||YES|
+v_gc_dashboard_stats|total_original_value|numeric||YES|
+v_gc_dashboard_stats|total_current_value|numeric||YES|
+v_gc_dashboard_stats|involved_units|bigint||YES|
+(643 ÐÐ¼ÇÂ¼)

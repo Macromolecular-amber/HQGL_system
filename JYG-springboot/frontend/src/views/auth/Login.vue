@@ -1,0 +1,82 @@
+
+<template>
+  <div class="login-container">
+    <el-card class="login-card">
+      <h2>后勤管理系统</h2>
+      <el-form :model="form" :rules="rules" ref="loginForm">
+        <el-form-item prop="username">
+          <el-input v-model="form.username" placeholder="用户名" prefix-icon="User" />
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input v-model="form.password" type="password" placeholder="密码" prefix-icon="Lock" @keyup.enter="handleLogin" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleLogin" :loading="loading" style="width:100%">登录</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
+</template>
+
+<script>
+import { ref, reactive } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+import { login } from '@/api/auth'
+
+export default {
+  setup() {
+    const router = useRouter()
+    const loginForm = ref(null)
+    const loading = ref(false)
+    const form = reactive({
+      username: '',
+      password: ''
+    })
+    const rules = {
+      username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+      password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+    }
+
+    const handleLogin = async () => {
+      await loginForm.value.validate()
+      loading.value = true
+      try {
+        const res = await login(form)
+        if (res && res.token) {
+          localStorage.setItem('token', res.token)
+          localStorage.setItem('userInfo', JSON.stringify(res.userInfo))
+          ElMessage.success('登录成功')
+          router.push('/')
+        } else {
+          ElMessage.error('登录失败')
+        }
+      } catch (e) {
+        ElMessage.error('登录失败，请检查网络或用户名密码')
+      } finally {
+        loading.value = false
+      }
+    }
+
+    return { form, rules, loginForm, loading, handleLogin }
+  }
+}
+</script>
+
+<style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f0f2f5;
+}
+.login-card {
+  width: 400px;
+  padding: 30px 20px;
+}
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+</style>

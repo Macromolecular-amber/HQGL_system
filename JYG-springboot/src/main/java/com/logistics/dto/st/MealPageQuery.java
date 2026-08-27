@@ -1,0 +1,29 @@
+package com.logistics.dto.st;
+
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+
+/**
+ * 个人订餐预约分页查询条件
+ */
+@Data
+public class MealPageQuery {
+
+    /** 用餐日期 */
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate mealDate;
+
+    /** 餐次：BREAKFAST / LUNCH / DINNER */
+    private String mealType;
+
+    /** 是否已取消（可选） */
+    private Boolean isCancelled;
+
+    /** 页码，默认 1 */
+    private Integer page = 1;
+
+    /** 每页条数，默认 20 */
+    private Integer size = 20;
+}
