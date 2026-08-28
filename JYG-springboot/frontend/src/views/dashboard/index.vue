@@ -157,6 +157,10 @@ export default {
       { key: 'car-apply', label: '用车申请', icon: 'Van', path: '/cl/apply' },
       { key: 'room-apply', label: '公寓申请', icon: 'OfficeBuilding', path: '/gy/occupant' },
       { key: 'meal-reserve', label: '预约订餐', icon: 'Dish', path: '/st/meal-reserve' },
+      { key: 'gc-borrow', label: '借用申请', icon: 'ShoppingTrolley', path: '/gc/borrow-apply' },
+      { key: 'room-query', label: '房间查询', icon: 'House', path: '/gy/room' },
+      { key: 'repair', label: '报修服务', icon: 'Tools', path: '/cl/repair' },
+      { key: 'message', label: '消息中心', icon: 'Bell', path: '/message' },
     ]
 
     // 统计数据
@@ -466,10 +470,11 @@ export default {
 /* 快捷入口 */
 .quick-entries {
   display: flex;
-  gap: 16px;
+  flex-wrap: nowrap;
+  gap: 8px;
   background: #fff;
   border-radius: 16px;
-  padding: 16px 24px;
+  padding: 16px 20px;
   margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
@@ -477,13 +482,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 12px 24px;
+  padding: 12px 8px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
   color: #333;
-  min-width: 80px;
+  min-width: 0;
+  flex: 1;
 }
 .entry-item:hover {
   background: var(--primary-light);
@@ -496,7 +503,8 @@ export default {
   font-size: 28px;
 }
 .entry-item span {
-  font-size: 13px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 /* 统计卡片 */
