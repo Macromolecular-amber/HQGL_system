@@ -16,6 +16,10 @@
           <el-icon><HomeFilled /></el-icon>
           <span>首页</span>
         </el-menu-item>
+        <el-menu-item v-if="canSeeLeadership" index="/dashboard/leadership">
+          <el-icon><Monitor /></el-icon>
+          <span>领导驾驶舱</span>
+        </el-menu-item>
         <el-sub-menu v-for="sub in visibleMenus" :key="sub.path" :index="sub.path">
           <template #title>
             <el-icon><component :is="sub.icon" /></el-icon>
@@ -85,7 +89,7 @@
 import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Bell, SwitchButton } from '@element-plus/icons-vue'
+import { Bell, SwitchButton, Monitor } from '@element-plus/icons-vue'
 import { allMenus } from '@/config/menu'
 import { getUnreadCount, getLatestMessages } from '@/api/message'
 
@@ -93,6 +97,11 @@ const router = useRouter()
 
 const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
 const roles = userInfo.roles || []
+
+/** 领导驾驶舱入口：仅 ADMIN / DIRECTOR / BIZ_ADMIN 可见 */
+const canSeeLeadership = computed(() =>
+  roles.includes('ADMIN') || roles.includes('DIRECTOR') || roles.includes('BIZ_ADMIN')
+)
 
 /** 按角色过滤菜单：ADMIN 全显，其余按菜单项 roles 匹配 */
 const visibleMenus = computed(() => {

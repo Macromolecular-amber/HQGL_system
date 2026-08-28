@@ -57,13 +57,13 @@
         <el-table-column label="操作" width="140" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">详情</el-button>
-            <el-button v-if="row.orderStatus === 'PENDING'" link type="warning" @click="openAudit(row)">
+            <el-button v-if="row.orderStatus === 'PENDING'" link type="warning" v-hasRole="['BIZ_ADMIN','WAREHOUSE']" @click="openAudit(row)">
               审核
             </el-button>
-            <el-button v-if="row.orderStatus === 'APPROVED'" link type="primary" @click="openStart(row)">
+            <el-button v-if="row.orderStatus === 'APPROVED'" link type="primary" v-hasRole="['BIZ_ADMIN','WAREHOUSE']" @click="openStart(row)">
               开始维修
             </el-button>
-            <el-button v-if="row.orderStatus === 'REPAIRING'" link type="success" @click="openAccept(row)">
+            <el-button v-if="row.orderStatus === 'REPAIRING'" link type="success" v-hasRole="['BIZ_ADMIN','WAREHOUSE']" @click="openAccept(row)">
               验收
             </el-button>
           </template>

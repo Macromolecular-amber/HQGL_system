@@ -76,7 +76,7 @@
         <el-table-column label="操作" width="140" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">详情</el-button>
-            <el-button v-if="row.orderStatus === 'PENDING'" link type="warning" @click="openAudit(row)">
+            <el-button v-if="row.orderStatus === 'PENDING'" link type="warning" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DIRECTOR','DEPT_MANAGER']" @click="openAudit(row)">
               审核
             </el-button>
           </template>

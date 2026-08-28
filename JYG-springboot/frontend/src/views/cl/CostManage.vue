@@ -32,7 +32,7 @@
         <el-form-item>
           <el-button type="primary" @click="handleQuery">查询</el-button>
           <el-button @click="handleReset">重置</el-button>
-          <el-button type="primary" plain @click="openAdd">新增费用</el-button>
+          <el-button type="primary" plain v-hasRole="['BIZ_ADMIN','WAREHOUSE','DRIVER']" @click="openAdd">新增费用</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -60,10 +60,10 @@
         <el-table-column label="操作" width="160" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">详情</el-button>
-            <el-button v-if="row.approvalStatus === 'PENDING'" link type="warning" @click="openAudit(row)">
+            <el-button v-if="row.approvalStatus === 'PENDING'" link type="warning" v-hasRole="['BIZ_ADMIN','DIRECTOR']" @click="openAudit(row)">
               审核
             </el-button>
-            <el-button v-if="row.approvalStatus === 'PENDING'" link type="primary" @click="openEdit(row)">
+            <el-button v-if="row.approvalStatus === 'PENDING'" link type="primary" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DRIVER']" @click="openEdit(row)">
               编辑
             </el-button>
           </template>

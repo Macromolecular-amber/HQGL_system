@@ -9,7 +9,7 @@
         </el-radio-group>
         <div class="tab-actions">
           <template v-if="tabType === 'expert'">
-            <el-button type="primary" @click="openAssign">直接分配</el-button>
+            <el-button type="primary" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DEPT_MANAGER']" @click="openAssign">直接分配</el-button>
           </template>
           <template v-else>
             <el-button type="warning" plain @click="filterPending">待审批列表</el-button>
@@ -68,9 +68,9 @@
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">详情</el-button>
-            <el-button v-if="isActive(row)" v-hasRole="['BIZ_ADMIN']" link type="danger" @click="openCheckout(row)">退住</el-button>
-            <el-button v-if="isPending(row)" v-hasRole="['BIZ_ADMIN']" link type="warning" @click="openAudit(row)">审批</el-button>
-            <el-button v-if="canAccept(row)" v-hasRole="['BIZ_ADMIN']" link type="success" @click="openAccept(row)">验收</el-button>
+            <el-button v-if="isActive(row)" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DIRECTOR','DEPT_MANAGER']" link type="danger" @click="openCheckout(row)">退住</el-button>
+            <el-button v-if="isPending(row)" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DIRECTOR','DEPT_MANAGER']" link type="warning" @click="openAudit(row)">审批</el-button>
+            <el-button v-if="canAccept(row)" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DIRECTOR','DEPT_MANAGER']" link type="success" @click="openAccept(row)">验收</el-button>
             <el-tag v-if="isAccepted(row)" type="success" size="small">已验收</el-tag>
           </template>
         </el-table-column>

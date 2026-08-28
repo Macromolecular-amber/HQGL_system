@@ -2,11 +2,13 @@ package com.logistics.controller;
 
 import com.logistics.common.Result;
 import com.logistics.dto.dashboard.DashboardStatisticsVO;
+import com.logistics.dto.dashboard.LeadershipDashboardVO;
 import com.logistics.dto.dashboard.MessageVO;
 import com.logistics.dto.dashboard.TodoVO;
 import com.logistics.dto.dashboard.TrendVO;
 import com.logistics.entity.SysUser;
 import com.logistics.repository.SysUserRepository;
+import com.logistics.security.RequiresRoles;
 import com.logistics.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -55,6 +57,15 @@ public class DashboardController {
     @GetMapping("/trend")
     public Result<TrendVO> getTrend() {
         return Result.success(dashboardService.getTrend());
+    }
+
+    /**
+     * 领导驾驶舱聚合数据（仅 ADMIN / DIRECTOR / BIZ_ADMIN 可见）
+     */
+    @GetMapping("/leadership")
+    @RequiresRoles({"ADMIN", "DIRECTOR", "BIZ_ADMIN"})
+    public Result<LeadershipDashboardVO> leadership() {
+        return Result.success(dashboardService.getLeadershipData());
     }
 
     /**

@@ -17,7 +17,7 @@
         <el-form-item>
           <el-button type="primary" @click="handleQuery">查询</el-button>
           <el-button @click="handleReset">重置</el-button>
-          <el-button type="success" @click="openSave()">新增物资</el-button>
+          <el-button type="success" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DEPT_MANAGER']" @click="openSave()">新增物资</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -52,8 +52,8 @@
         </el-table-column>
         <el-table-column label="操作" width="190" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openSave(row)">编辑</el-button>
-            <el-button link type="danger" @click="handleDelete(row)">删除</el-button>
+            <el-button link type="primary" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DEPT_MANAGER']" @click="openSave(row)">编辑</el-button>
+            <el-button link type="danger" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DEPT_MANAGER']" @click="handleDelete(row)">删除</el-button>
             <el-button link type="info" @click="showDetail(row)">详情</el-button>
           </template>
         </el-table-column>

@@ -18,6 +18,12 @@ const routes = [
         meta: { title: '首页' }
       },
       {
+        path: '/dashboard/leadership',
+        name: 'LeadershipDashboard',
+        component: () => import('../views/dashboard/Leadership.vue'),
+        meta: { title: '领导驾驶舱', roles: ['ADMIN', 'DIRECTOR', 'BIZ_ADMIN'] }
+      },
+      {
         path: '/gc/asset-apply',
         name: 'AssetApply',
         component: () => import('../views/gc/AssetApply.vue'),

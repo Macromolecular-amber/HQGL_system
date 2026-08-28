@@ -2,6 +2,7 @@ package com.logistics.service.impl;
 
 import com.logistics.common.BusinessException;
 import com.logistics.dto.dashboard.DashboardStatisticsVO;
+import com.logistics.dto.dashboard.LeadershipDashboardVO;
 import com.logistics.dto.dashboard.MessageVO;
 import com.logistics.dto.dashboard.TodoVO;
 import com.logistics.dto.dashboard.TrendVO;
@@ -9,6 +10,7 @@ import com.logistics.entity.ClApplyOrder;
 import com.logistics.entity.ClVehicleArchive;
 import com.logistics.entity.GcAssetCard;
 import com.logistics.entity.GcBorrowOrder;
+import com.logistics.entity.GcReturnOrder;
 import com.logistics.entity.GyOccupant;
 import com.logistics.entity.GyRoom;
 import com.logistics.entity.StMealReservation;
@@ -17,6 +19,7 @@ import com.logistics.repository.ClApplyOrderRepository;
 import com.logistics.repository.ClVehicleArchiveRepository;
 import com.logistics.repository.GcAssetCardRepository;
 import com.logistics.repository.GcBorrowOrderRepository;
+import com.logistics.repository.GcReturnOrderRepository;
 import com.logistics.repository.GyOccupantRepository;
 import com.logistics.repository.GyRoomRepository;
 import com.logistics.repository.StMealReservationRepository;
@@ -85,6 +88,7 @@ public class DashboardServiceImpl implements DashboardService {
     private final StMealReservationRepository mealReservationRepository;
     private final StPurchaseOrderRepository purchaseOrderRepository;
     private final GcBorrowOrderRepository borrowOrderRepository;
+    private final GcReturnOrderRepository returnOrderRepository;
     private final GyOccupantRepository occupantRepository;
 
     @Override
@@ -253,6 +257,173 @@ public class DashboardServiceImpl implements DashboardService {
         return vo;
     }
 
+    @Override
+    public LeadershipDashboardVO getLeadershipData() {
+        LocalDate now = LocalDate.now();
+        LocalDate monthStart = now.withDayOfMonth(1);
+        LocalDate lastMonthStart = monthStart.minusMonths(1);
+        LocalDate lastMonthEnd = monthStart.minusDays(1);
+        OffsetDateTime curStart = monthStart.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        OffsetDateTime curEnd = now.plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        OffsetDateTime lastStart = lastMonthStart.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        OffsetDateTime lastEnd = monthStart.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+
+        LeadershipDashboardVO vo = new LeadershipDashboardVO();
+        Map<String, LeadershipDashboardVO.Kpi> kpis = new LinkedHashMap<>();
+
+        // 1. 总资产（公物仓）
+        long totalAssets = count(assetCardRepository, null);
+        long assetsCur = countBetween(assetCardRepository, curStart, curEnd);
+        long assetsLast = countBetween(assetCardRepository, lastStart, lastEnd);
+        kpis.put("totalAssets", kpi(totalAssets, assetsCur, assetsLast));
+
+        // 2. 在仓资产
+        long inStockAssets = count(assetCardRepository, (root, cq, cb) ->
+                cb.equal(cb.upper(root.get("assetStatus")), ASSET_IN_STOCK));
+        kpis.put("inStockAssets", kpi(inStockAssets, assetsCur, assetsLast));
+
+        // 3. 本月用车次数（APPROVED）
+        long carUsesCur = count(applyOrderRepository, (root, cq, cb) -> cb.and(
+                cb.equal(cb.upper(root.get("applyStatus")), "APPROVED"),
+                cb.between(root.get("createTime"), curStart, curEnd)));
+        long carUsesLast = count(applyOrderRepository, (root, cq, cb) -> cb.and(
+                cb.equal(cb.upper(root.get("applyStatus")), "APPROVED"),
+                cb.between(root.get("createTime"), lastStart, lastEnd)));
+        kpis.put("monthCarUses", kpi(carUsesCur, carUsesCur, carUsesLast));
+
+        // 4. 公寓入住率
+        long totalRooms = count(roomRepository, null);
+        long occupiedRooms = count(roomRepository, (root, cq, cb) ->
+                cb.equal(cb.upper(root.get("roomStatus")), "OCCUPIED"));
+        double occupancyRate = totalRooms == 0 ? 0 : Math.round(occupiedRooms * 1000.0 / totalRooms) / 10.0;
+        long occupantCur = countBetween(occupantRepository, curStart, curEnd);
+        long occupantLast = countBetween(occupantRepository, lastStart, lastEnd);
+        kpis.put("occupancyRate", kpi(occupancyRate, occupantCur, occupantLast));
+
+        // 5. 本月食堂预约人次
+        long mealCur = mealReservationRepository.count((root, cq, cb) -> cb.and(
+                cb.between(root.get("mealDate"), monthStart, now),
+                cb.isFalse(root.get("isCancelled"))));
+        long mealLast = mealReservationRepository.count((root, cq, cb) -> cb.and(
+                cb.between(root.get("mealDate"), lastMonthStart, lastMonthEnd),
+                cb.isFalse(root.get("isCancelled"))));
+        kpis.put("monthMealReserves", kpi(mealCur, mealCur, mealLast));
+
+        // 6. 待审批总数
+        long borrowPending = count(borrowOrderRepository, (root, cq, cb) ->
+                cb.equal(cb.upper(root.get("orderStatus")), BORROW_PENDING));
+        long applyPending = count(applyOrderRepository, (root, cq, cb) ->
+                cb.equal(cb.upper(root.get("applyStatus")), APPLY_PENDING));
+        long purchasePending = count(purchaseOrderRepository, (root, cq, cb) ->
+                cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
+        long occupantPending = count(occupantRepository, (root, cq, cb) ->
+                cb.equal(cb.upper(root.get("occupantStatus")), OCCUPANT_PENDING));
+        long pendingTotal = borrowPending + applyPending + purchasePending + occupantPending;
+        kpis.put("pendingApprovals", kpi(pendingTotal, pendingTotal, pendingTotal));
+
+        vo.setKpis(kpis);
+
+        // 中部：近 7 天趋势
+        LocalDate trendStart = now.minusDays(TREND_DAYS - 1);
+        OffsetDateTime trendStartTime = trendStart.atStartOfDay().atZone(ZoneId.systemDefault()).toOffsetDateTime();
+        List<String> dates = new ArrayList<>();
+        for (int i = 0; i < TREND_DAYS; i++) {
+            dates.add(trendStart.plusDays(i).format(DATE_FORMATTER));
+        }
+        List<GcAssetCard> assets = assetCardRepository.findAll((root, cq, cb) -> cb.and(
+                cb.isFalse(root.get("isDeleted")),
+                cb.greaterThanOrEqualTo(root.get("createTime"), trendStartTime)));
+        Map<LocalDate, Long> gcDayMap = groupByDate(assets, GcAssetCard::getCreateTime);
+        List<ClApplyOrder> applies = applyOrderRepository.findAll((root, cq, cb) -> cb.and(
+                cb.isFalse(root.get("isDeleted")),
+                cb.greaterThanOrEqualTo(root.get("createTime"), trendStartTime)));
+        Map<LocalDate, Long> clDayMap = groupByDate(applies, ClApplyOrder::getCreateTime);
+        List<StMealReservation> meals = mealReservationRepository.findAll((root, cq, cb) -> cb.and(
+                cb.between(root.get("mealDate"), trendStart, now),
+                cb.isFalse(root.get("isCancelled"))));
+        Map<LocalDate, Long> stDayMap = groupByDateLocal(meals, StMealReservation::getMealDate);
+
+        LeadershipDashboardVO.TrendData trend = new LeadershipDashboardVO.TrendData();
+        trend.setDates(dates);
+        List<Number> gcSeries = new ArrayList<>();
+        List<Number> clSeries = new ArrayList<>();
+        List<Number> stSeries = new ArrayList<>();
+        for (int i = 0; i < TREND_DAYS; i++) {
+            LocalDate d = trendStart.plusDays(i);
+            gcSeries.add(gcDayMap.getOrDefault(d, 0L));
+            clSeries.add(clDayMap.getOrDefault(d, 0L));
+            stSeries.add(stDayMap.getOrDefault(d, 0L));
+        }
+        trend.setGc(gcSeries);
+        trend.setCl(clSeries);
+        trend.setSt(stSeries);
+        vo.setTrends(trend);
+
+        // 中部：本月业务分布
+        Map<String, Number> dist = new LinkedHashMap<>();
+        dist.put("gc", countBetween(borrowOrderRepository, curStart, curEnd));
+        dist.put("cl", countBetween(applyOrderRepository, curStart, curEnd));
+        dist.put("gy", occupantCur);
+        dist.put("st", mealCur);
+        vo.setDistribution(dist);
+
+        // 底部：本月核心数据明细
+        Map<String, LeadershipDashboardVO.ModuleDetail> details = new LinkedHashMap<>();
+        LeadershipDashboardVO.ModuleDetail gcDetail = new LeadershipDashboardVO.ModuleDetail();
+        gcDetail.setMonthNew(assetsCur);
+        gcDetail.setMonthDone(countBetween(returnOrderRepository, curStart, curEnd));
+        double gcChange = changePct(assetsCur, assetsLast);
+        gcDetail.setLastMonth(gcChange);
+        gcDetail.setYoy(gcChange);
+        gcDetail.setStatus(gcChange < -50 ? "abnormal" : "normal");
+
+        LeadershipDashboardVO.ModuleDetail clDetail = new LeadershipDashboardVO.ModuleDetail();
+        double clApplyCur = countBetween(applyOrderRepository, curStart, curEnd);
+        double clApplyLast = countBetween(applyOrderRepository, lastStart, lastEnd);
+        clDetail.setMonthNew(clApplyCur);
+        clDetail.setMonthDone(carUsesCur);
+        double clChange = changePct(clApplyCur, clApplyLast);
+        clDetail.setLastMonth(clChange);
+        clDetail.setYoy(clChange);
+        clDetail.setStatus(clChange < -50 ? "abnormal" : "normal");
+
+        LeadershipDashboardVO.ModuleDetail gyDetail = new LeadershipDashboardVO.ModuleDetail();
+        gyDetail.setMonthNew(occupantCur);
+        gyDetail.setMonthDone(count(occupantRepository, (root, cq, cb) -> cb.and(
+                cb.between(root.get("createTime"), curStart, curEnd),
+                cb.equal(cb.upper(root.get("occupantStatus")), "ACTIVE"))));
+        double gyChange = changePct(occupantCur, occupantLast);
+        gyDetail.setLastMonth(gyChange);
+        gyDetail.setYoy(gyChange);
+        gyDetail.setStatus(gyChange < -50 ? "abnormal" : "normal");
+
+        LeadershipDashboardVO.ModuleDetail stDetail = new LeadershipDashboardVO.ModuleDetail();
+        double monthPurchase = purchaseOrderRepository.findAll((root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.isFalse(root.get("isDeleted")));
+            predicates.add(cb.or(
+                    cb.equal(cb.upper(root.get("orderStatus")), PURCHASE_COMPLETED),
+                    cb.equal(cb.upper(root.get("orderStatus")), PURCHASE_RECEIVED)));
+            predicates.add(cb.between(root.get("createTime"), curStart, curEnd));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        }).stream().map(StPurchaseOrder::getTotalAmount).filter(a -> a != null)
+                .reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+        stDetail.setMonthNew(monthPurchase);
+        stDetail.setMonthDone(mealCur);
+        double stChange = changePct(mealCur, mealLast);
+        stDetail.setLastMonth(stChange);
+        stDetail.setYoy(stChange);
+        stDetail.setStatus(stChange < -50 ? "abnormal" : "normal");
+
+        details.put("gc", gcDetail);
+        details.put("cl", clDetail);
+        details.put("gy", gyDetail);
+        details.put("st", stDetail);
+        vo.setDetails(details);
+
+        return vo;
+    }
+
     /**
      * 按日期分组统计
      */
@@ -283,6 +454,50 @@ public class DashboardServiceImpl implements DashboardService {
                     predicates.add(extraSpec.toPredicate(root, cq, cb));
                     return cb.and(predicates.toArray(new Predicate[0]));
                 });
+    }
+
+    /**
+     * 统计指定时间区间内创建（createTime）的记录数
+     */
+    private <T> long countBetween(org.springframework.data.jpa.repository.JpaRepository<T, Long> repo,
+                                  OffsetDateTime start, OffsetDateTime end) {
+        return count(repo, (root, cq, cb) -> cb.between(root.get("createTime"), start, end));
+    }
+
+    /**
+     * 按 LocalDate 字段分组统计（用于预约等按业务日期统计）
+     */
+    private <T> Map<LocalDate, Long> groupByDateLocal(List<T> list,
+                                                      java.util.function.Function<T, LocalDate> dateGetter) {
+        Map<LocalDate, Long> map = new LinkedHashMap<>();
+        for (T item : list) {
+            LocalDate date = dateGetter.apply(item);
+            if (date == null) continue;
+            map.merge(date, 1L, Long::sum);
+        }
+        return map;
+    }
+
+    /**
+     * 计算环比变化百分比
+     */
+    private double changePct(double cur, double last) {
+        double change = 0;
+        if (last != 0) {
+            change = (cur - last) / last * 100;
+        } else if (cur > 0) {
+            change = 100;
+        }
+        return Math.round(change * 10) / 10.0;
+    }
+
+    /**
+     * 构造 KPI 指标（value 为展示值，change 依据本月/上月计数计算）
+     */
+    private LeadershipDashboardVO.Kpi kpi(double value, double curCount, double lastCount) {
+        double change = changePct(curCount, lastCount);
+        String trend = change > 0.05 ? "up" : (change < -0.05 ? "down" : "flat");
+        return new LeadershipDashboardVO.Kpi(value, change, trend);
     }
 
     private String formatTime(OffsetDateTime time) {

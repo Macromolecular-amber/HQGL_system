@@ -19,3 +19,8 @@ export function getMessages() {
 export function getTrend() {
   return request({ url: '/api/dashboard/trend', method: 'get' })
 }
+
+/** 领导驾驶舱聚合数据 */
+export function getLeadershipData() {
+  return request({ url: '/api/dashboard/leadership', method: 'get' })
+}

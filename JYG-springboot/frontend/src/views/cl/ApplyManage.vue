@@ -94,7 +94,7 @@
             <el-button v-if="row.applyStatus === 'PENDING'" link type="danger" @click="handleCancel(row)">
               取消
             </el-button>
-            <el-button v-if="row.applyStatus === 'PENDING'" link type="warning" @click="openAudit(row)">
+            <el-button v-if="row.applyStatus === 'PENDING'" link type="warning" v-hasRole="['BIZ_ADMIN','DIRECTOR']" @click="openAudit(row)">
               审核
             </el-button>
           </template>
