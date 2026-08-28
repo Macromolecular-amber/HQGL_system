@@ -35,7 +35,7 @@ public class GcBorrowController {
     /**
      * 提交借用申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DEPT_MANAGER"})
     @PostMapping("/apply")
     @Log(module="GC", operation="提交借用申请", type="ADD")
     public Result<BorrowOrderVO> apply(@Valid @RequestBody BorrowApplyRequest request) {
@@ -45,7 +45,7 @@ public class GcBorrowController {
     /**
      * 审批借用申请
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/audit")
     @Log(module="GC", operation="借用审批", type="APPROVE")
     public Result<Void> audit(@Valid @RequestBody BorrowAuditRequest request) {
@@ -56,7 +56,7 @@ public class GcBorrowController {
     /**
      * 分页查询借用单
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/page")
     public Result<PageResult<BorrowOrderVO>> page(BorrowPageQuery query) {
         return Result.success(gcBorrowService.queryPage(query));
@@ -65,7 +65,7 @@ public class GcBorrowController {
     /**
      * 借用单详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/{id}")
     public Result<BorrowOrderVO> detail(@PathVariable Long id) {
         return Result.success(gcBorrowService.getDetail(id));
@@ -74,7 +74,7 @@ public class GcBorrowController {
     /**
      * 借用单下的资产列表（用于归还选择）
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/{id}/assets")
     public Result<List<BorrowDetailVO>> assets(@PathVariable Long id) {
         return Result.success(gcBorrowService.getBorrowAssets(id));

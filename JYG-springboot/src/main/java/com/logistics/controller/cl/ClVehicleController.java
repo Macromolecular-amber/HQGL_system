@@ -54,7 +54,7 @@ public class ClVehicleController {
     /**
      * 分页查询车辆
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/page")
     public Result<PageResult<VehicleVO>> page(VehiclePageQuery query) {
         return Result.success(clVehicleService.queryPage(query));
@@ -63,7 +63,7 @@ public class ClVehicleController {
     /**
      * 车辆详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/{id}")
     public Result<VehicleVO> detail(@PathVariable Long id) {
         return Result.success(clVehicleService.getDetail(id));
@@ -72,7 +72,7 @@ public class ClVehicleController {
     /**
      * 获取所有可用车辆（供调度选择）
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/available")
     public Result<List<VehicleVO>> available() {
         return Result.success(clVehicleService.getAvailableVehicles());

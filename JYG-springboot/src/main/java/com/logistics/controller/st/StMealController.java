@@ -38,7 +38,7 @@ public class StMealController {
     /**
      * 预约订餐
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @PostMapping("/reserve")
     @Log(module="ST", operation="预约订餐", type="ADD")
     public Result<MealReservationVO> reserve(@RequestBody MealReserveRequest request) {
@@ -48,7 +48,7 @@ public class StMealController {
     /**
      * 取消预约
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @PutMapping("/cancel")
     @Log(module="ST", operation="取消预约", type="UPDATE")
     public Result<Void> cancel(@Valid @RequestBody MealCancelRequest request) {
@@ -59,7 +59,7 @@ public class StMealController {
     /**
      * 分页查询个人预约记录
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @GetMapping("/page")
     public Result<PageResult<MealReservationVO>> page(MealPageQuery query) {
         return Result.success(stMealService.queryPage(query));
@@ -77,7 +77,7 @@ public class StMealController {
     /**
      * 备餐统计（管理员用）
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
     @GetMapping("/statistics")
     public Result<MealStatisticsVO> statistics(MealStatisticsQuery query) {
         return Result.success(stMealService.getStatistics(query));

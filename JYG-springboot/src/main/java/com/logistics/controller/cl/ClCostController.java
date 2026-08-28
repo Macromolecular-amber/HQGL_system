@@ -36,7 +36,7 @@ public class ClCostController {
     /**
      * 费用登记
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DRIVER"})
     @PostMapping("/save")
     @Log(module="CL", operation="新增费用记录", type="ADD")
     public Result<CostVO> save(@Valid @RequestBody CostSaveRequest request) {
@@ -46,7 +46,7 @@ public class ClCostController {
     /**
      * 编辑费用（仅待审批状态）
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DRIVER"})
     @PutMapping("/update/{id}")
     @Log(module="CL", operation="编辑费用记录", type="UPDATE")
     public Result<CostVO> update(@PathVariable Long id, @Valid @RequestBody CostSaveRequest request) {
@@ -67,7 +67,7 @@ public class ClCostController {
     /**
      * 分页查询费用明细
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/page")
     public Result<PageResult<CostVO>> page(CostPageQuery query) {
         return Result.success(clCostService.queryPage(query));
@@ -76,7 +76,7 @@ public class ClCostController {
     /**
      * 费用详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/{id}")
     public Result<CostVO> detail(@PathVariable Long id) {
         return Result.success(clCostService.getDetail(id));
@@ -85,7 +85,7 @@ public class ClCostController {
     /**
      * 单车台账汇总（按月）
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/summary/vehicle/{vehicleId}")
     public Result<VehicleCostSummaryVO> vehicleSummary(@PathVariable Long vehicleId,
                                                        @RequestParam String yearMonth) {
@@ -95,7 +95,7 @@ public class ClCostController {
     /**
      * 所有车辆台账汇总（按月）
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/summary/all")
     public Result<List<VehicleCostSummaryVO>> allSummary(@RequestParam String yearMonth) {
         return Result.success(clCostService.getAllVehicleSummary(yearMonth));

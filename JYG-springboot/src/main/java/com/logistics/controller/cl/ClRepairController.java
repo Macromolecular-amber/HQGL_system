@@ -36,7 +36,7 @@ public class ClRepairController {
     /**
      * 提交维修申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DRIVER"})
     @PostMapping("/apply")
     @Log(module="CL", operation="提交维修申请", type="ADD")
     public Result<RepairVO> apply(@Valid @RequestBody RepairApplyRequest request) {
@@ -79,7 +79,7 @@ public class ClRepairController {
     /**
      * 分页查询维修单
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/page")
     public Result<PageResult<RepairVO>> page(RepairPageQuery query) {
         return Result.success(clRepairService.queryPage(query));
@@ -88,7 +88,7 @@ public class ClRepairController {
     /**
      * 维修单详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/{id}")
     public Result<RepairVO> detail(@PathVariable Long id) {
         return Result.success(clRepairService.getDetail(id));
@@ -97,7 +97,7 @@ public class ClRepairController {
     /**
      * 获取某车辆的所有维修记录
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/vehicle/{vehicleId}")
     public Result<List<RepairVO>> byVehicle(@PathVariable Long vehicleId) {
         return Result.success(clRepairService.getByVehicleId(vehicleId));

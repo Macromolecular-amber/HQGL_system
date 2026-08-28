@@ -39,7 +39,7 @@ public class GyOccupantController {
     /**
      * 专家公寓直接分配入住
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DEPT_MANAGER"})
     @PostMapping("/assign/direct")
     @Log(module="GY", operation="直接分配入住", type="ADD")
     public Result<OccupantVO> assignDirectly(@Valid @RequestBody OccupantAssignRequest request) {
@@ -49,7 +49,7 @@ public class GyOccupantController {
     /**
      * 人才公寓提交入住申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @PostMapping("/apply")
     @Log(module="GY", operation="提交入住申请", type="ADD")
     public Result<OccupantVO> apply(@Valid @RequestBody OccupantApplyRequest request) {
@@ -59,7 +59,7 @@ public class GyOccupantController {
     /**
      * 人才公寓入住审批
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/audit")
     @Log(module="GY", operation="入住审批", type="APPROVE")
     public Result<Void> audit(@Valid @RequestBody OccupantAuditRequest request) {
@@ -70,7 +70,7 @@ public class GyOccupantController {
     /**
      * 分页查询入住记录
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/page")
     public Result<PageResult<OccupantVO>> page(OccupantPageQuery query) {
         return Result.success(gyOccupantService.queryPage(query));
@@ -79,7 +79,7 @@ public class GyOccupantController {
     /**
      * 入住记录详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/{id}")
     public Result<OccupantVO> detail(@PathVariable Long id) {
         return Result.success(gyOccupantService.getDetail(id));
@@ -88,7 +88,7 @@ public class GyOccupantController {
     /**
      * 退住
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/checkout/{id}")
     @Log(module="GY", operation="办理退宿", type="UPDATE")
     public Result<Void> checkout(@PathVariable Long id,
@@ -102,7 +102,7 @@ public class GyOccupantController {
     /**
      * 退住验收
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/checkout/accept")
     @Log(module="GY", operation="退宿验收", type="APPROVE")
     public Result<Void> acceptCheckout(@Valid @RequestBody CheckoutAcceptRequest request) {
@@ -113,7 +113,7 @@ public class GyOccupantController {
     /**
      * 租期到期预警
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/expiring")
     public Result<List<OccupantVO>> expiring(@RequestParam(defaultValue = "7") int days) {
         return Result.success(gyOccupantService.getExpiringOccupants(days));

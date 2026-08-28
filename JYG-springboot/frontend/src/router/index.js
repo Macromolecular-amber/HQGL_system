@@ -171,7 +171,7 @@ const routes = [
         path: '/system/log',
         name: 'LogQuery',
         component: () => import('../views/system/LogQuery.vue'),
-        meta: { title: '操作日志', roles: ['ADMIN', 'DIRECTOR'] }
+        meta: { title: '操作日志', roles: ['ADMIN'] }
       }
     ]
   }
@@ -182,7 +182,7 @@ const router = createRouter({
   routes
 })
 
-// 路由守卫：未登录跳转登录页，已登录访问登录页跳回首页
+// 路由守卫：未登录跳转登录页，已登录访问登录页跳回首页；带 meta.roles 的路由校验角色权限
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
   if (to.path === '/login') {
@@ -194,9 +194,25 @@ router.beforeEach((to, from, next) => {
   } else {
     if (!token) {
       next('/login')
-    } else {
-      next()
+      return
     }
+    // 角色权限校验：仅当目标路由声明了 meta.roles 时拦截（与菜单可见性联动）
+    const requiredRoles = to.meta.roles
+    if (requiredRoles && requiredRoles.length > 0) {
+      let userInfo = null
+      try {
+        userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null')
+      } catch (e) {
+        userInfo = null
+      }
+      const userRoles = (userInfo && userInfo.roles) || []
+      const hasPermission = userRoles.some((r) => requiredRoles.includes(r))
+      if (!hasPermission) {
+        next('/')
+        return
+      }
+    }
+    next()
   }
 })
 

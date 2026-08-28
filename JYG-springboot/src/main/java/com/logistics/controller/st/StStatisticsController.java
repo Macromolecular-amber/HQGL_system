@@ -34,7 +34,7 @@ public class StStatisticsController {
     /**
      * 记录餐余
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
     @PostMapping("/waste/record")
     @Log(module="ST", operation="登记厨余垃圾", type="ADD")
     public Result<WasteVO> recordWaste(@Valid @RequestBody WasteRecordRequest request) {
@@ -44,7 +44,7 @@ public class StStatisticsController {
     /**
      * 分页查询餐余记录
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
     @GetMapping("/waste/page")
     public Result<PageResult<WasteVO>> wastePage(WastePageQuery query) {
         return Result.success(stStatisticsService.queryWastePage(query));
@@ -53,7 +53,7 @@ public class StStatisticsController {
     /**
      * 餐余统计
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
     @GetMapping("/waste/statistics")
     public Result<WasteStatisticsVO> wasteStatistics(StatisticsQuery query) {
         return Result.success(stStatisticsService.getWasteStatistics(query));
@@ -62,7 +62,7 @@ public class StStatisticsController {
     /**
      * 消费统计
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
     @GetMapping("/consume/statistics")
     public Result<ConsumeStatisticsVO> consumeStatistics(StatisticsQuery query) {
         return Result.success(stStatisticsService.getConsumeStatistics(query));
@@ -71,7 +71,7 @@ public class StStatisticsController {
     /**
      * 采购统计
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
     @GetMapping("/purchase/statistics")
     public Result<PurchaseStatisticsVO> purchaseStatistics(StatisticsQuery query) {
         return Result.success(stStatisticsService.getPurchaseStatistics(query));

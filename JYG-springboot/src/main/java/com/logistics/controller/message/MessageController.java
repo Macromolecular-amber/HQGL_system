@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/message")
-@RequiresRoles({"USER", "BIZ_ADMIN", "WAREHOUSE", "DIRECTOR", "DRIVER", "CLEANER"})
+@RequiresRoles({"USER", "BIZ_ADMIN", "WAREHOUSE", "DIRECTOR", "DRIVER", "CLEANER", "DEPT_MANAGER"})
 @RequiredArgsConstructor
 public class MessageController {
 

@@ -36,7 +36,7 @@ public class GyRepairController {
     /**
      * 提交维修申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @PostMapping("/apply")
     @Log(module="GY", operation="提交维修申请", type="ADD")
     public Result<RepairVO> apply(@Valid @RequestBody RepairApplyRequest request) {
@@ -46,7 +46,7 @@ public class GyRepairController {
     /**
      * 维修审批
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/audit")
     @Log(module="GY", operation="维修审批", type="APPROVE")
     public Result<Void> audit(@Valid @RequestBody RepairAuditRequest request) {
@@ -57,7 +57,7 @@ public class GyRepairController {
     /**
      * 开始维修
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/start")
     @Log(module="GY", operation="开始维修", type="UPDATE")
     public Result<Void> start(@Valid @RequestBody RepairStartRequest request) {
@@ -68,7 +68,7 @@ public class GyRepairController {
     /**
      * 维修验收
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/accept")
     @Log(module="GY", operation="维修验收", type="APPROVE")
     public Result<Void> accept(@Valid @RequestBody RepairAcceptRequest request) {
@@ -79,7 +79,7 @@ public class GyRepairController {
     /**
      * 分页查询维修单
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/page")
     public Result<PageResult<RepairVO>> page(RepairPageQuery query) {
         return Result.success(gyRepairService.queryPage(query));
@@ -88,7 +88,7 @@ public class GyRepairController {
     /**
      * 维修单详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/{id}")
     public Result<RepairVO> detail(@PathVariable Long id) {
         return Result.success(gyRepairService.getDetail(id));
@@ -97,7 +97,7 @@ public class GyRepairController {
     /**
      * 获取某房间的所有维修记录
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/room/{roomId}")
     public Result<List<RepairVO>> byRoom(@PathVariable Long roomId) {
         return Result.success(gyRepairService.getByRoomId(roomId));

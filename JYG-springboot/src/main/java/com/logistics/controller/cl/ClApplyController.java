@@ -33,7 +33,7 @@ public class ClApplyController {
     /**
      * 提交用车申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @PostMapping("/apply")
     @Log(module="CL", operation="提交用车申请", type="ADD")
     public Result<ApplyVO> apply(@Valid @RequestBody ApplyRequest request) {
@@ -54,7 +54,7 @@ public class ClApplyController {
     /**
      * 分页查询用车申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/page")
     public Result<PageResult<ApplyVO>> page(ApplyPageQuery query) {
         return Result.success(clApplyService.queryPage(query));
@@ -63,7 +63,7 @@ public class ClApplyController {
     /**
      * 用车申请详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/{id}")
     public Result<ApplyVO> detail(@PathVariable Long id) {
         return Result.success(clApplyService.getDetail(id));
@@ -72,7 +72,7 @@ public class ClApplyController {
     /**
      * 取消用车申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @PutMapping("/cancel/{id}")
     @Log(module="CL", operation="取消用车申请", type="UPDATE")
     public Result<Void> cancel(@PathVariable Long id) {

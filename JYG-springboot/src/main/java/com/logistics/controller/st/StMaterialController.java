@@ -33,7 +33,7 @@ public class StMaterialController {
     /**
      * 新增或编辑物资
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DEPT_MANAGER"})
     @PostMapping("/save")
     @Log(module="ST", operation="物资建档", type="ADD")
     public Result<MaterialVO> save(@Valid @RequestBody MaterialSaveRequest request) {
@@ -43,7 +43,7 @@ public class StMaterialController {
     /**
      * 逻辑删除物资
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DEPT_MANAGER"})
     @DeleteMapping("/{id}")
     @Log(module="ST", operation="删除物资", type="DELETE")
     public Result<Void> delete(@PathVariable Long id) {
@@ -54,7 +54,7 @@ public class StMaterialController {
     /**
      * 分页查询物资
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DEPT_MANAGER","DIRECTOR"})
     @GetMapping("/page")
     public Result<PageResult<MaterialVO>> page(MaterialPageQuery query) {
         return Result.success(stMaterialService.queryPage(query));
@@ -63,7 +63,7 @@ public class StMaterialController {
     /**
      * 物资详情
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DEPT_MANAGER","DIRECTOR"})
     @GetMapping("/{id}")
     public Result<MaterialVO> detail(@PathVariable Long id) {
         return Result.success(stMaterialService.getDetail(id));
@@ -72,7 +72,7 @@ public class StMaterialController {
     /**
      * 按分类获取物资列表
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DEPT_MANAGER","DIRECTOR"})
     @GetMapping("/category/{category}")
     public Result<List<MaterialVO>> byCategory(@PathVariable String category) {
         return Result.success(stMaterialService.getByCategory(category));

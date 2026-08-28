@@ -36,7 +36,7 @@ public class GyCleaningController {
     /**
      * 提交保洁申请
      */
-    @RequiresRoles({"USER","BIZ_ADMIN"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER","CLEANER"})
     @PostMapping("/apply")
     @Log(module="GY", operation="提交保洁申请", type="ADD")
     public Result<CleaningVO> apply(@Valid @RequestBody CleaningApplyRequest request) {
@@ -46,7 +46,7 @@ public class GyCleaningController {
     /**
      * 保洁审批
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/audit")
     @Log(module="GY", operation="保洁审批", type="APPROVE")
     public Result<Void> audit(@Valid @RequestBody CleaningAuditRequest request) {
@@ -57,7 +57,7 @@ public class GyCleaningController {
     /**
      * 保洁派单
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @PutMapping("/assign")
     @Log(module="GY", operation="保洁派工", type="UPDATE")
     public Result<Void> assign(@Valid @RequestBody CleaningAssignRequest request) {
@@ -68,7 +68,7 @@ public class GyCleaningController {
     /**
      * 保洁验收
      */
-    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER","CLEANER"})
     @PutMapping("/accept")
     @Log(module="GY", operation="保洁验收", type="APPROVE")
     public Result<Void> accept(@Valid @RequestBody CleaningAcceptRequest request) {
@@ -79,7 +79,7 @@ public class GyCleaningController {
     /**
      * 分页查询保洁单
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER","CLEANER"})
     @GetMapping("/page")
     public Result<PageResult<CleaningVO>> page(CleaningPageQuery query) {
         return Result.success(gyCleaningService.queryPage(query));
@@ -88,7 +88,7 @@ public class GyCleaningController {
     /**
      * 保洁单详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER","CLEANER"})
     @GetMapping("/{id}")
     public Result<CleaningVO> detail(@PathVariable Long id) {
         return Result.success(gyCleaningService.getDetail(id));
@@ -97,7 +97,7 @@ public class GyCleaningController {
     /**
      * 获取某房间的所有保洁记录
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER","CLEANER"})
     @GetMapping("/room/{roomId}")
     public Result<List<CleaningVO>> byRoom(@PathVariable Long roomId) {
         return Result.success(gyCleaningService.getByRoomId(roomId));
