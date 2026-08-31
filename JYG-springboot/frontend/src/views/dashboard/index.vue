@@ -65,18 +65,18 @@
           <template #header>
             <div class="card-header">
               <span>📋 待办审批</span>
-              <el-button type="text" @click="goToTodos">查看全部</el-button>
+              <el-button link type="primary" @click="goToTodos">查看全部</el-button>
             </div>
           </template>
           <div class="todo-list">
             <div v-for="todo in todos" :key="todo.id" class="todo-item">
-              <div class="todo-info">
-                <span class="todo-title">{{ todo.title }}</span>
-                <el-tag :type="getTagType(todo.module)" size="small">{{ todo.module }}</el-tag>
-              </div>
+              <div class="todo-title" :title="todo.title">{{ todo.title }}</div>
               <div class="todo-meta">
+                <div class="todo-tags">
+                  <el-tag :type="getTagType(todo.module)" size="small">{{ todo.module }}</el-tag>
+                  <el-tag type="warning" size="small">{{ todo.status }}</el-tag>
+                </div>
                 <span class="todo-time">{{ todo.time }}</span>
-                <el-tag type="warning" size="small">{{ todo.status }}</el-tag>
               </div>
             </div>
             <div v-if="todos.length === 0" class="empty-state">暂无待办事项</div>
@@ -88,12 +88,12 @@
           <template #header>
             <div class="card-header">
               <span>💬 消息通知</span>
-              <el-button type="text" @click="goToMessages">查看全部</el-button>
+              <el-button link type="primary" @click="goToMessages">查看全部</el-button>
             </div>
           </template>
           <div class="msg-list">
             <div v-for="msg in messages" :key="msg.id" class="msg-item">
-              <div class="msg-title">{{ msg.title }}</div>
+              <div class="msg-title" :title="msg.title">{{ msg.title }}</div>
               <div class="msg-meta">
                 <el-tag :type="getMsgTagType(msg.type)" size="small">{{ msg.type }}</el-tag>
                 <span class="msg-time">{{ msg.time }}</span>
@@ -223,7 +223,8 @@ export default {
           ]
         }
 
-        todos.value = todoData || []
+        // 待办审批预览最多显示 5 条，与消息通知保持一致
+        todos.value = (todoData || []).slice(0, 5)
 
         messages.value = msgData || []
 
@@ -534,9 +535,24 @@ export default {
   opacity: 0.8;
 }
 
-/* 中间区域 */
+/* 中间区域：待办审批与消息通知等高 */
 .middle-row {
   margin-bottom: 20px;
+  align-items: stretch;
+}
+.middle-row .el-col {
+  display: flex;
+}
+.middle-row .el-col > .el-card {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.middle-row .el-col > .el-card :deep(.el-card__body) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 .card-header {
   display: flex;
@@ -548,42 +564,47 @@ export default {
   font-size: 16px;
 }
 
-/* 待办列表 */
+/* 待办列表与消息列表：等高填充并可滚动 */
 .todo-list, .msg-list {
-  max-height: 300px;
+  flex: 1;
+  min-height: 200px;
   overflow-y: auto;
 }
 .todo-item {
   padding: 10px 12px;
   border-radius: 8px;
   border-bottom: 1px solid #f0f0f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   cursor: pointer;
   transition: background 0.15s;
 }
 .todo-item:hover {
   background: var(--primary-light);
 }
-.todo-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 .todo-title {
   font-size: 14px;
+  font-weight: 600;
   color: #333;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .todo-meta {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+}
+.todo-tags {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 .todo-time {
   font-size: 12px;
   color: #999;
+  white-space: nowrap;
 }
 
 /* 消息列表 */
@@ -599,17 +620,23 @@ export default {
 }
 .msg-title {
   font-size: 14px;
+  font-weight: 600;
   color: #333;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .msg-meta {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 .msg-time {
   font-size: 12px;
   color: #999;
+  white-space: nowrap;
 }
 
 /* 图表 */

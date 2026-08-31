@@ -11,6 +11,10 @@ import com.logistics.entity.ClVehicleArchive;
 import com.logistics.entity.GcAssetCard;
 import com.logistics.entity.GcBorrowOrder;
 import com.logistics.entity.GcReturnOrder;
+import com.logistics.entity.GcTransferOrder;
+import com.logistics.entity.ClRepairOrder;
+import com.logistics.entity.GyCleaningOrder;
+import com.logistics.entity.GyRepairOrder;
 import com.logistics.entity.GyOccupant;
 import com.logistics.entity.GyRoom;
 import com.logistics.entity.StMealReservation;
@@ -20,11 +24,16 @@ import com.logistics.repository.ClVehicleArchiveRepository;
 import com.logistics.repository.GcAssetCardRepository;
 import com.logistics.repository.GcBorrowOrderRepository;
 import com.logistics.repository.GcReturnOrderRepository;
+import com.logistics.repository.GcTransferOrderRepository;
+import com.logistics.repository.ClRepairOrderRepository;
+import com.logistics.repository.GyCleaningOrderRepository;
+import com.logistics.repository.GyRepairOrderRepository;
 import com.logistics.repository.GyOccupantRepository;
 import com.logistics.repository.GyRoomRepository;
 import com.logistics.repository.StMealReservationRepository;
 import com.logistics.repository.StPurchaseOrderRepository;
 import com.logistics.service.DashboardService;
+import com.logistics.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -90,6 +99,11 @@ public class DashboardServiceImpl implements DashboardService {
     private final GcBorrowOrderRepository borrowOrderRepository;
     private final GcReturnOrderRepository returnOrderRepository;
     private final GyOccupantRepository occupantRepository;
+    private final GcTransferOrderRepository transferOrderRepository;
+    private final ClRepairOrderRepository clRepairOrderRepository;
+    private final GyRepairOrderRepository gyRepairOrderRepository;
+    private final GyCleaningOrderRepository gyCleaningOrderRepository;
+    private final MessageService messageService;
 
     @Override
     public DashboardStatisticsVO getStatistics(Long userId) {
@@ -139,79 +153,107 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public List<TodoVO> getTodos(Long userId) {
         List<TodoVO> todos = new ArrayList<>();
-        // 借用审批
-        List<GcBorrowOrder> borrowOrders = borrowOrderRepository.findAll((root, cq, cb) -> {
+        // 公物仓-借用审批
+        for (GcBorrowOrder o : borrowOrderRepository.findAll((root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.isFalse(root.get("isDeleted")));
             predicates.add(cb.equal(cb.upper(root.get("orderStatus")), BORROW_PENDING));
             return cb.and(predicates.toArray(new Predicate[0]));
-        });
-        for (GcBorrowOrder o : borrowOrders) {
-            TodoVO todo = new TodoVO();
-            todo.setId(o.getId());
-            todo.setTitle("借用申请 " + o.getOrderNo() + "（" + (StringUtils.hasText(o.getApplicantName()) ? o.getApplicantName() : "") + "）");
-            todo.setModule("公物仓");
-            todo.setTime(o.getCreateTime() == null ? null : formatTime(o.getCreateTime()));
-            todo.setStatus("待审批");
-            todos.add(todo);
+        })) {
+            addTodo(todos, o.getId(), "借用申请 " + o.getOrderNo() + nameSuffix(o.getApplicantName()), "公物仓", o.getCreateTime());
         }
-        // 用车申请审批
-        List<ClApplyOrder> applyOrders = applyOrderRepository.findAll((root, cq, cb) -> {
+        // 公物仓-调剂审批
+        for (GcTransferOrder o : transferOrderRepository.findAll((root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.isFalse(root.get("isDeleted")));
+            predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        })) {
+            addTodo(todos, o.getId(), "调剂申请 " + o.getOrderNo(), "公物仓", o.getCreateTime());
+        }
+        // 用车-用车申请审批
+        for (ClApplyOrder o : applyOrderRepository.findAll((root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.isFalse(root.get("isDeleted")));
             predicates.add(cb.equal(cb.upper(root.get("applyStatus")), APPLY_PENDING));
             return cb.and(predicates.toArray(new Predicate[0]));
-        });
-        for (ClApplyOrder o : applyOrders) {
-            TodoVO todo = new TodoVO();
-            todo.setId(o.getId());
-            todo.setTitle("用车申请 " + o.getApplyNo() + "（" + (StringUtils.hasText(o.getApplicantName()) ? o.getApplicantName() : "") + "）");
-            todo.setModule("用车");
-            todo.setTime(o.getCreateTime() == null ? null : formatTime(o.getCreateTime()));
-            todo.setStatus("待审批");
-            todos.add(todo);
+        })) {
+            addTodo(todos, o.getId(), "用车申请 " + o.getApplyNo() + nameSuffix(o.getApplicantName()), "用车", o.getCreateTime());
         }
-        // 采购申请（草稿待审批）
-        List<StPurchaseOrder> purchaseOrders = purchaseOrderRepository.findAll((root, cq, cb) -> {
+        // 用车-维修保养审批
+        for (ClRepairOrder o : clRepairOrderRepository.findAll((root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.isFalse(root.get("isDeleted")));
-            predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "DRAFT"));
+            predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
             return cb.and(predicates.toArray(new Predicate[0]));
-        });
-        for (StPurchaseOrder o : purchaseOrders) {
-            TodoVO todo = new TodoVO();
-            todo.setId(o.getId());
-            todo.setTitle("采购申请 " + o.getOrderNo());
-            todo.setModule("食堂");
-            todo.setTime(o.getCreateTime() == null ? null : formatTime(o.getCreateTime()));
-            todo.setStatus("待审批");
-            todos.add(todo);
+        })) {
+            addTodo(todos, o.getId(), "车辆维修 " + o.getRepairNo() + nameSuffix(o.getPlateNumber()), "用车", o.getCreateTime());
         }
-        // 公寓入住申请
-        List<GyOccupant> occupants = occupantRepository.findAll((root, cq, cb) -> {
+        // 公寓-入住申请
+        for (GyOccupant o : occupantRepository.findAll((root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.isFalse(root.get("isDeleted")));
             predicates.add(cb.equal(cb.upper(root.get("occupantStatus")), OCCUPANT_PENDING));
             return cb.and(predicates.toArray(new Predicate[0]));
-        });
-        for (GyOccupant o : occupants) {
-            TodoVO todo = new TodoVO();
-            todo.setId(o.getId());
-            todo.setTitle("公寓入住申请（" + (StringUtils.hasText(o.getOccupantName()) ? o.getOccupantName() : "") + "）");
-            todo.setModule("公寓");
-            todo.setTime(o.getCreateTime() == null ? null : formatTime(o.getCreateTime()));
-            todo.setStatus("待审批");
-            todos.add(todo);
+        })) {
+            addTodo(todos, o.getId(), "公寓入住申请" + nameSuffix(o.getOccupantName()), "公寓", o.getCreateTime());
+        }
+        // 公寓-维修审批
+        for (GyRepairOrder o : gyRepairOrderRepository.findAll((root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.isFalse(root.get("isDeleted")));
+            predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        })) {
+            addTodo(todos, o.getId(), "公寓维修 " + o.getRepairNo() + nameSuffix(o.getRoomNo()), "公寓", o.getCreateTime());
+        }
+        // 公寓-保洁审批
+        for (GyCleaningOrder o : gyCleaningOrderRepository.findAll((root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.isFalse(root.get("isDeleted")));
+            predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        })) {
+            addTodo(todos, o.getId(), "保洁申请 " + o.getCleaningNo() + nameSuffix(o.getRoomNo()), "公寓", o.getCreateTime());
+        }
+        // 食堂-采购申请
+        for (StPurchaseOrder o : purchaseOrderRepository.findAll((root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.isFalse(root.get("isDeleted")));
+            predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        })) {
+            addTodo(todos, o.getId(), "采购申请 " + o.getOrderNo(), "食堂", o.getCreateTime());
         }
         // 按时间倒序
         todos.sort(Comparator.comparing(TodoVO::getTime, Comparator.nullsLast(String::compareTo)).reversed());
         return todos;
     }
 
+    private void addTodo(List<TodoVO> todos, Long id, String title, String module, OffsetDateTime time) {
+        TodoVO todo = new TodoVO();
+        todo.setId(id);
+        todo.setTitle(title);
+        todo.setModule(module);
+        todo.setTime(time == null ? null : formatTime(time));
+        todo.setStatus("待审批");
+        todos.add(todo);
+    }
+
+    private String nameSuffix(String name) {
+        return StringUtils.hasText(name) ? "（" + name + "）" : "";
+    }
+
     @Override
     public List<MessageVO> getMessages(Long userId) {
-        // sys_message 消息表尚未建立，先返回空列表，后续对接消息中心
-        return new ArrayList<>();
+        return messageService.getLatest(userId, 5).stream().map(m -> {
+            MessageVO vo = new MessageVO();
+            vo.setId(m.getId());
+            vo.setTitle(m.getTitle());
+            vo.setType(m.getMessageTypeLabel());
+            vo.setTime(m.getCreateTime() == null ? null : formatTime(m.getCreateTime()));
+            return vo;
+        }).collect(Collectors.toList());
     }
 
     @Override
