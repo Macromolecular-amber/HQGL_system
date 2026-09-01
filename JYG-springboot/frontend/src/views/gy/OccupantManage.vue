@@ -12,6 +12,7 @@
             <el-button type="primary" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DEPT_MANAGER']" @click="openAssign">直接分配</el-button>
           </template>
           <template v-else>
+            <el-button type="primary" v-hasRole="['USER','BIZ_ADMIN','DEPT_MANAGER']" @click="openApply">公寓申请</el-button>
             <el-button type="warning" plain @click="filterPending">待审批列表</el-button>
           </template>
         </div>
@@ -146,6 +147,55 @@
       <template #footer>
         <el-button @click="assignVisible = false">取消</el-button>
         <el-button type="primary" :loading="assigning" @click="submitAssign">确认分配</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- 公寓申请对话框（人才公寓） -->
+    <el-dialog v-model="applyVisible" title="人才公寓入住申请" width="620px" :close-on-click-modal="false">
+      <el-form ref="applyFormRef" :model="applyForm" :rules="applyRules" label-width="100px">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="入住人" prop="occupantName">
+              <el-input v-model="applyForm.occupantName" maxlength="50" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="电话" prop="phone">
+              <el-input v-model="applyForm.phone" maxlength="20" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="身份证号">
+              <el-input v-model="applyForm.idCard" maxlength="18" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="所属单位" prop="unitId">
+              <el-select v-model="applyForm.unitId" placeholder="请选择单位" filterable style="width: 100%">
+                <el-option v-for="u in units" :key="u.id" :label="u.unitName" :value="u.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="职务">
+              <el-input v-model="applyForm.position" maxlength="50" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="申请原因" prop="applyReason">
+              <el-input v-model="applyForm.applyReason" type="textarea" :rows="3" maxlength="500" placeholder="请说明申请原因" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="备注">
+              <el-input v-model="applyForm.remark" type="textarea" :rows="2" maxlength="500" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <template #footer>
+        <el-button @click="applyVisible = false">取消</el-button>
+        <el-button type="primary" :loading="applying" @click="submitApply">提交申请</el-button>
       </template>
     </el-dialog>
 
@@ -295,7 +345,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getUnitList } from '@/api/sys'
-import { getAvailableRooms, assignDirect, auditOccupant, getOccupantPage, getOccupantDetail, checkoutOccupant, acceptCheckout, getRoomDetail } from '@/api/gy'
+import { getAvailableRooms, assignDirect, applyOccupant, auditOccupant, getOccupantPage, getOccupantDetail, checkoutOccupant, acceptCheckout, getRoomDetail } from '@/api/gy'
 
 /** Tab：专家公寓 / 人才公寓 */
 const tabType = ref('expert')
@@ -479,6 +529,66 @@ const submitAssign = () => {
       // 错误已由拦截器统一提示
     } finally {
       assigning.value = false
+    }
+  })
+}
+
+/** 人才公寓入住申请 */
+const applyVisible = ref(false)
+const applying = ref(false)
+const applyFormRef = ref()
+const applyForm = reactive({
+  occupantName: '',
+  idCard: '',
+  phone: '',
+  unitId: null,
+  position: '',
+  applyReason: '',
+  remark: ''
+})
+
+const applyRules = {
+  occupantName: [{ required: true, message: '请输入入住人姓名', trigger: 'blur' }],
+  phone: [{ required: true, message: '请输入联系电话', trigger: 'blur' }],
+  unitId: [{ required: true, message: '请选择所属单位', trigger: 'change' }],
+  applyReason: [{ required: true, message: '请输入申请原因', trigger: 'blur' }]
+}
+
+const openApply = () => {
+  Object.assign(applyForm, {
+    occupantName: '',
+    idCard: '',
+    phone: '',
+    unitId: null,
+    position: '',
+    applyReason: '',
+    remark: ''
+  })
+  applyFormRef.value && applyFormRef.value.clearValidate()
+  applyVisible.value = true
+}
+
+const submitApply = () => {
+  applyFormRef.value.validate(async (valid) => {
+    if (!valid) return
+    applying.value = true
+    try {
+      await applyOccupant({
+        occupantName: applyForm.occupantName,
+        idCard: applyForm.idCard || undefined,
+        phone: applyForm.phone,
+        unitId: applyForm.unitId,
+        position: applyForm.position || undefined,
+        applyReason: applyForm.applyReason,
+        remark: applyForm.remark || undefined
+      })
+      ElMessage.success('申请已提交，等待审批')
+      applyVisible.value = false
+      loadList()
+    } catch (e) {
+      // 错误已由拦截器统一提示
+    } finally {
+      applying.value = false
     }
   })
 }
