@@ -24,6 +24,12 @@ const routes = [
         meta: { title: '领导驾驶舱', roles: ['ADMIN', 'DIRECTOR', 'BIZ_ADMIN'] }
       },
       {
+        path: '/todos',
+        name: 'TodoCenter',
+        component: () => import('../views/dashboard/TodoCenter.vue'),
+        meta: { title: '待办审批' }
+      },
+      {
         path: '/gc/asset-apply',
         name: 'AssetApply',
         component: () => import('../views/gc/AssetApply.vue'),

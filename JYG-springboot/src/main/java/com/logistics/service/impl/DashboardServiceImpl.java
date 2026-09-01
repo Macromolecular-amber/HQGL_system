@@ -160,7 +160,7 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("orderStatus")), BORROW_PENDING));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "借用申请 " + o.getOrderNo() + nameSuffix(o.getApplicantName()), "公物仓", o.getCreateTime());
+            addTodo(todos, o.getId(), "借用申请 " + o.getOrderNo() + nameSuffix(o.getApplicantName()), "公物仓", "/gc/borrow-apply", o.getCreateTime());
         }
         // 公物仓-调剂审批
         for (GcTransferOrder o : transferOrderRepository.findAll((root, cq, cb) -> {
@@ -169,7 +169,7 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "调剂申请 " + o.getOrderNo(), "公物仓", o.getCreateTime());
+            addTodo(todos, o.getId(), "调剂申请 " + o.getOrderNo(), "公物仓", "/gc/transfer-apply", o.getCreateTime());
         }
         // 用车-用车申请审批
         for (ClApplyOrder o : applyOrderRepository.findAll((root, cq, cb) -> {
@@ -178,7 +178,7 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("applyStatus")), APPLY_PENDING));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "用车申请 " + o.getApplyNo() + nameSuffix(o.getApplicantName()), "用车", o.getCreateTime());
+            addTodo(todos, o.getId(), "用车申请 " + o.getApplyNo() + nameSuffix(o.getApplicantName()), "用车", "/cl/apply", o.getCreateTime());
         }
         // 用车-维修保养审批
         for (ClRepairOrder o : clRepairOrderRepository.findAll((root, cq, cb) -> {
@@ -187,7 +187,7 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "车辆维修 " + o.getRepairNo() + nameSuffix(o.getPlateNumber()), "用车", o.getCreateTime());
+            addTodo(todos, o.getId(), "车辆维修 " + o.getRepairNo() + nameSuffix(o.getPlateNumber()), "用车", "/cl/repair", o.getCreateTime());
         }
         // 公寓-入住申请
         for (GyOccupant o : occupantRepository.findAll((root, cq, cb) -> {
@@ -196,7 +196,7 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("occupantStatus")), OCCUPANT_PENDING));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "公寓入住申请" + nameSuffix(o.getOccupantName()), "公寓", o.getCreateTime());
+            addTodo(todos, o.getId(), "公寓入住申请" + nameSuffix(o.getOccupantName()), "公寓", "/gy/occupant", o.getCreateTime());
         }
         // 公寓-维修审批
         for (GyRepairOrder o : gyRepairOrderRepository.findAll((root, cq, cb) -> {
@@ -205,7 +205,7 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "公寓维修 " + o.getRepairNo() + nameSuffix(o.getRoomNo()), "公寓", o.getCreateTime());
+            addTodo(todos, o.getId(), "公寓维修 " + o.getRepairNo() + nameSuffix(o.getRoomNo()), "公寓", "/gy/repair", o.getCreateTime());
         }
         // 公寓-保洁审批
         for (GyCleaningOrder o : gyCleaningOrderRepository.findAll((root, cq, cb) -> {
@@ -214,7 +214,7 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "保洁申请 " + o.getCleaningNo() + nameSuffix(o.getRoomNo()), "公寓", o.getCreateTime());
+            addTodo(todos, o.getId(), "保洁申请 " + o.getCleaningNo() + nameSuffix(o.getRoomNo()), "公寓", "/gy/cleaning", o.getCreateTime());
         }
         // 食堂-采购申请
         for (StPurchaseOrder o : purchaseOrderRepository.findAll((root, cq, cb) -> {
@@ -223,20 +223,21 @@ public class DashboardServiceImpl implements DashboardService {
             predicates.add(cb.equal(cb.upper(root.get("orderStatus")), "PENDING"));
             return cb.and(predicates.toArray(new Predicate[0]));
         })) {
-            addTodo(todos, o.getId(), "采购申请 " + o.getOrderNo(), "食堂", o.getCreateTime());
+            addTodo(todos, o.getId(), "采购申请 " + o.getOrderNo(), "食堂", "/st/purchase", o.getCreateTime());
         }
         // 按时间倒序
         todos.sort(Comparator.comparing(TodoVO::getTime, Comparator.nullsLast(String::compareTo)).reversed());
         return todos;
     }
 
-    private void addTodo(List<TodoVO> todos, Long id, String title, String module, OffsetDateTime time) {
+    private void addTodo(List<TodoVO> todos, Long id, String title, String module, String path, OffsetDateTime time) {
         TodoVO todo = new TodoVO();
         todo.setId(id);
         todo.setTitle(title);
         todo.setModule(module);
         todo.setTime(time == null ? null : formatTime(time));
         todo.setStatus("待审批");
+        todo.setPath(path);
         todos.add(todo);
     }
 

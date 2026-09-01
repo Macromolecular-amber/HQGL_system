@@ -69,7 +69,7 @@
             </div>
           </template>
           <div class="todo-list">
-            <div v-for="todo in todos" :key="todo.id" class="todo-item">
+            <div v-for="todo in todos" :key="todo.id" class="todo-item" @click="handleTodoClick(todo)">
               <div class="todo-title" :title="todo.title">{{ todo.title }}</div>
               <div class="todo-meta">
                 <div class="todo-tags">
@@ -313,7 +313,22 @@ export default {
     }
 
     const goToTodos = () => {
-      router.push('/todos') // 待实现
+      router.push('/todos')
+    }
+
+    const handleTodoClick = (todo) => {
+      if (todo && todo.path) {
+        router.push(todo.path)
+        return
+      }
+      // 无路径时按模块回退到对应功能页
+      const modulePathMap = {
+        '公物仓': '/gc/borrow-apply',
+        '用车': '/cl/apply',
+        '公寓': '/gy/occupant',
+        '食堂': '/st/purchase'
+      }
+      router.push((todo && modulePathMap[todo.module]) || '/todos')
     }
 
     const goToMessages = () => {
@@ -353,6 +368,7 @@ export default {
       getTagType,
       getMsgTagType,
       goToTodos,
+      handleTodoClick,
       goToMessages
     }
   }

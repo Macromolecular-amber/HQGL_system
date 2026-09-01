@@ -30,7 +30,7 @@
     <!-- 房间列表 -->
     <el-card shadow="never">
       <el-table v-loading="loading" :data="list" border stripe>
-        <el-table-column prop="building" label="楼栋" width="150" show-overflow-tooltip />
+        <el-table-column prop="building" label="楼栋" min-width="150" show-overflow-tooltip />
         <el-table-column prop="floor" label="楼层" width="70" align="center" />
         <el-table-column prop="roomNo" label="房间号" width="100" show-overflow-tooltip />
         <el-table-column label="房间类型" width="100" align="center">
@@ -38,7 +38,7 @@
             {{ row.roomTypeLabel || row.roomType }}
           </template>
         </el-table-column>
-        <el-table-column prop="layout" label="户型" width="100" show-overflow-tooltip>
+        <el-table-column prop="layout" label="户型" min-width="100" show-overflow-tooltip>
           <template #default="{ row }">{{ row.layout || '-' }}</template>
         </el-table-column>
         <el-table-column prop="area" label="面积(㎡)" width="100" align="right">
@@ -51,7 +51,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="currentOccupantName" label="当前入住人" width="110" show-overflow-tooltip>
+        <el-table-column prop="currentOccupantName" label="当前入住人" min-width="120" show-overflow-tooltip>
           <template #default="{ row }">{{ row.currentOccupantName || '-' }}</template>
         </el-table-column>
         <el-table-column label="操作" width="150" fixed="right">

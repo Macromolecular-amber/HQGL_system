@@ -22,4 +22,7 @@ public class TodoVO {
 
     /** 状态 */
     private String status;
+
+    /** 目标页面路径 */
+    private String path;
 }
