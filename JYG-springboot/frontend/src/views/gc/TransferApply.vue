@@ -61,7 +61,7 @@
         <el-table-column label="申请时间" width="160">
           <template #default="{ row }">{{ formatTime(row.createTime) }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="140" fixed="right">
+        <el-table-column label="操作" width="170" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">详情</el-button>
             <el-button v-if="row.orderStatus === 'PENDING'" link type="warning" @click="openAudit(row)">

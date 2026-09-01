@@ -55,6 +55,14 @@ body {
   border: 1px solid var(--primary) !important;
 }
 
+// 所有可操作按钮字体统一调大两号（默认/大号 14px→16px，小号 12px→14px）
+.el-button {
+  font-size: 16px !important;
+}
+.el-button--small {
+  font-size: 14px !important;
+}
+
 // 表格操作列链接按钮：主色调浅（60% 主色），hover 恢复主题色
 .el-table .el-button.is-link {
   color: #a3b2f2;
@@ -80,6 +88,10 @@ body {
 }
 .el-table__body tr:hover > td.el-table__cell {
   background-color: var(--primary-light) !important;
+}
+// 表格右侧固定操作列：按钮保持单行、不换行
+.el-table-fixed-column--right .cell {
+  white-space: nowrap;
 }
 
 // 侧边栏（由 Layout 组件控制，这里保留全局变量）

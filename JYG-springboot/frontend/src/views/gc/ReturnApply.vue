@@ -66,8 +66,8 @@
         <span class="card-title">归还申请列表</span>
       </template>
       <el-table v-loading="loading" :data="list" border stripe>
-        <el-table-column prop="returnNo" label="归还单号" width="150" show-overflow-tooltip />
-        <el-table-column prop="borrowOrderNo" label="关联借用单号" width="150" show-overflow-tooltip />
+        <el-table-column prop="returnNo" label="归还单号" min-width="150" show-overflow-tooltip />
+        <el-table-column prop="borrowOrderNo" label="关联借用单号" min-width="150" show-overflow-tooltip />
         <el-table-column prop="assetCount" label="资产数量" width="90" align="center" />
         <el-table-column label="归还时间" width="160">
           <template #default="{ row }">{{ formatTime(row.planReturnTime) }}</template>
@@ -77,7 +77,7 @@
             <el-tag :type="statusType(row.returnStatus)">{{ statusText(row.returnStatus) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="140" fixed="right">
+        <el-table-column label="操作" width="170" fixed="right">
           <template #default="{ row }">
             <el-button v-if="row.returnStatus === 'PENDING'" link type="warning" @click="openAccept(row)">
               验收

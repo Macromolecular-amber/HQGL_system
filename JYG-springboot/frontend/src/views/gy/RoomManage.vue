@@ -54,7 +54,7 @@
         <el-table-column prop="currentOccupantName" label="当前入住人" min-width="120" show-overflow-tooltip>
           <template #default="{ row }">{{ row.currentOccupantName || '-' }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column label="操作" width="170" fixed="right">
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">详情</el-button>
             <el-button link type="primary" v-hasRole="['BIZ_ADMIN','WAREHOUSE','DEPT_MANAGER']" @click="openEdit(row)">编辑</el-button>
