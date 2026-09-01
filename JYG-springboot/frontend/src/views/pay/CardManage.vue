@@ -57,7 +57,7 @@
         </div>
       </template>
       <el-table v-loading="loading" :data="list" border stripe>
-        <el-table-column prop="transactionNo" label="流水号" width="190" show-overflow-tooltip />
+        <el-table-column prop="transactionNo" label="流水号" min-width="190" show-overflow-tooltip />
         <el-table-column label="类型" width="90" align="center">
           <template #default="{ row }">
             <el-tag :type="txTagType(row.transactionType)">{{ row.transactionTypeLabel || row.transactionType }}</el-tag>
@@ -73,7 +73,7 @@
         <el-table-column label="交易方式" width="90" align="center">
           <template #default="{ row }">{{ row.payMethodLabel || row.payMethod || '-' }}</template>
         </el-table-column>
-        <el-table-column prop="bizOrderNo" label="关联业务单号" width="150" show-overflow-tooltip>
+        <el-table-column prop="bizOrderNo" label="关联业务单号" min-width="150" show-overflow-tooltip>
           <template #default="{ row }">{{ row.bizOrderNo || '-' }}</template>
         </el-table-column>
         <el-table-column label="状态" width="90" align="center">
@@ -82,7 +82,7 @@
             <el-tag v-else type="danger">{{ row.payStatus || '-' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="时间" width="160">
+        <el-table-column label="时间" min-width="160">
           <template #default="{ row }">{{ formatTime(row.createTime) }}</template>
         </el-table-column>
         <el-table-column label="操作" width="80" align="center">

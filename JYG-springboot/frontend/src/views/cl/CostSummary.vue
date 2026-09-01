@@ -31,34 +31,34 @@
         highlight-current-row
         @row-click="goDetail"
       >
-        <el-table-column prop="plateNumber" label="车牌号" width="120" />
-        <el-table-column label="燃油费" width="110" align="right">
+        <el-table-column prop="plateNumber" label="车牌号" min-width="120" />
+        <el-table-column label="燃油费" min-width="110" align="right">
           <template #default="{ row }">{{ money(row.totalFuelCost) }}</template>
         </el-table-column>
-        <el-table-column label="维修费" width="110" align="right">
+        <el-table-column label="维修费" min-width="110" align="right">
           <template #default="{ row }">{{ money(row.totalRepairCost) }}</template>
         </el-table-column>
-        <el-table-column label="保险费" width="110" align="right">
+        <el-table-column label="保险费" min-width="110" align="right">
           <template #default="{ row }">{{ money(row.totalInsuranceCost) }}</template>
         </el-table-column>
-        <el-table-column label="过路费" width="110" align="right">
+        <el-table-column label="过路费" min-width="110" align="right">
           <template #default="{ row }">{{ money(row.totalTollCost) }}</template>
         </el-table-column>
-        <el-table-column label="ETC" width="100" align="right">
+        <el-table-column label="ETC" min-width="100" align="right">
           <template #default="{ row }">{{ money(row.totalEtcCost) }}</template>
         </el-table-column>
-        <el-table-column label="停车费" width="110" align="right">
+        <el-table-column label="停车费" min-width="110" align="right">
           <template #default="{ row }">{{ money(row.totalParkingCost) }}</template>
         </el-table-column>
-        <el-table-column label="其他" width="100" align="right">
+        <el-table-column label="其他" min-width="100" align="right">
           <template #default="{ row }">{{ money(row.totalOtherCost) }}</template>
         </el-table-column>
-        <el-table-column label="总费用" width="120" align="right">
+        <el-table-column label="总费用" min-width="120" align="right">
           <template #default="{ row }">
             <span class="total">{{ money(row.totalCost) }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="百公里油耗(L)" width="130" align="right">
+        <el-table-column label="百公里油耗(L)" min-width="130" align="right">
           <template #default="{ row }">{{ row.avgFuelConsumption ?? '-' }}</template>
         </el-table-column>
       </el-table>

@@ -21,6 +21,9 @@ public class MealReserveRequest {
     /** 预约人数，默认 1 */
     private Integer mealCount = 1;
 
+    /** 单位ID（下拉选择，用于备餐按单位统计） */
+    private Long unitId;
+
     /** 备注 */
     private String remark;
 }

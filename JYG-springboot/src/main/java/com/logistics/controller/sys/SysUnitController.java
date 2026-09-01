@@ -28,6 +28,7 @@ public class SysUnitController {
     /**
      * 单位下拉列表
      */
+    @RequiresRoles({"ADMIN","USER","DEPT_MANAGER","BIZ_ADMIN"})
     @GetMapping("/list")
     public Result<List<UnitVO>> list() {
         List<UnitVO> list = sysUnitRepository.findAll(Sort.by(Sort.Direction.ASC, "sortOrder"))

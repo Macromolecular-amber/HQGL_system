@@ -16,6 +16,11 @@
             <el-radio-button value="DINNER">晚餐</el-radio-button>
           </el-radio-group>
         </el-form-item>
+        <el-form-item label="单位名称" prop="unitId">
+          <el-select v-model="reserveForm.unitId" placeholder="请选择单位" filterable style="width: 180px">
+            <el-option v-for="u in units" :key="u.id" :label="u.unitName" :value="u.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="就餐人数" prop="mealCount">
           <el-input-number v-model="reserveForm.mealCount" :min="1" :max="50" :controls="false" style="width: 100px" />
         </el-form-item>
@@ -41,6 +46,9 @@
           <template #default="{ row }">
             <el-tag :type="mealTagType(row.mealType)">{{ row.mealTypeLabel || row.mealType }}</el-tag>
           </template>
+        </el-table-column>
+        <el-table-column label="单位" min-width="140" show-overflow-tooltip>
+          <template #default="{ row }">{{ row.unitName || '-' }}</template>
         </el-table-column>
         <el-table-column prop="mealCount" label="人数" width="90" align="center" />
         <el-table-column label="预约时间" width="170">
@@ -81,6 +89,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reserveMeal, cancelMeal, getMealPage } from '@/api/st'
+import { getUnitList } from '@/api/sys'
 
 /** 餐次开餐时间（用于取消时限判断） */
 const mealTimeMap = { BREAKFAST: 7, LUNCH: 12, DINNER: 18 }
@@ -95,19 +104,32 @@ const today = () => {
 }
 const disabledDate = (date) => date.getTime() < new Date(new Date().toDateString()).getTime()
 
+/** 预填当前登录用户所属单位ID */
+const currentUserUnitId = () => {
+  try {
+    const ui = JSON.parse(localStorage.getItem('userInfo') || '{}')
+    return ui.unitId ?? undefined
+  } catch (e) {
+    return undefined
+  }
+}
+
 /** 预约表单 */
 const reserving = ref(false)
 const reserveFormRef = ref()
+const units = ref([])
 const reserveForm = reactive({
   mealDate: today(),
   mealType: 'LUNCH',
   mealCount: 1,
+  unitId: currentUserUnitId(),
   remark: ''
 })
 
 const reserveRules = {
   mealDate: [{ required: true, message: '请选择就餐日期', trigger: 'change' }],
   mealType: [{ required: true, message: '请选择餐次', trigger: 'change' }],
+  unitId: [{ required: true, message: '请选择单位', trigger: 'change' }],
   mealCount: [{ required: true, message: '请输入就餐人数', trigger: 'blur' }]
 }
 
@@ -120,6 +142,7 @@ const submitReserve = () => {
         mealDate: reserveForm.mealDate,
         mealType: reserveForm.mealType,
         mealCount: reserveForm.mealCount || 1,
+        unitId: reserveForm.unitId,
         remark: reserveForm.remark || undefined
       })
       ElMessage.success('预约成功')
@@ -179,8 +202,18 @@ const handleCancel = (row) => {
 }
 
 onMounted(() => {
+  loadUnits()
   loadList()
 })
+
+/** 加载单位下拉数据 */
+const loadUnits = async () => {
+  try {
+    units.value = (await getUnitList()) || []
+  } catch (e) {
+    units.value = []
+  }
+}
 </script>
 
 <style scoped>

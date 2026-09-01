@@ -10,8 +10,10 @@ import com.logistics.dto.st.MealStatisticsQuery;
 import com.logistics.dto.st.MealStatisticsVO;
 import com.logistics.dto.st.UnitMealStatVO;
 import com.logistics.entity.StMealReservation;
+import com.logistics.entity.SysUnit;
 import com.logistics.entity.SysUser;
 import com.logistics.repository.StMealReservationRepository;
+import com.logistics.repository.SysUnitRepository;
 import com.logistics.repository.SysUserRepository;
 import com.logistics.service.st.StMealService;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +71,7 @@ public class StMealServiceImpl implements StMealService {
 
     private final StMealReservationRepository mealReservationRepository;
     private final SysUserRepository sysUserRepository;
+    private final SysUnitRepository sysUnitRepository;
 
     @Override
     @Transactional
@@ -106,8 +109,18 @@ public class StMealServiceImpl implements StMealService {
         StMealReservation reservation = new StMealReservation();
         reservation.setUserId(userId);
         reservation.setUserName(userName);
-        reservation.setUnitId(user == null ? null : user.getUnitId());
-        reservation.setUnitName(user == null ? null : user.getUnitName());
+        // 单位：优先使用前端下拉选择的单位，否则回退到当前用户所属单位
+        Long unitId = request.getUnitId();
+        String unitName = null;
+        if (unitId != null) {
+            unitName = sysUnitRepository.findById(unitId).map(SysUnit::getUnitName).orElse(null);
+        }
+        if (unitId == null && user != null) {
+            unitId = user.getUnitId();
+            unitName = user.getUnitName();
+        }
+        reservation.setUnitId(unitId);
+        reservation.setUnitName(unitName);
         reservation.setMealDate(mealDate);
         reservation.setMealType(mealType);
         reservation.setMealCount(mealCount);
