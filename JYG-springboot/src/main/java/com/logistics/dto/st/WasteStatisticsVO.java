@@ -23,4 +23,7 @@ public class WasteStatisticsVO {
 
     /** 按餐次统计 */
     private Map<String, BigDecimal> byMealType;
+
+    /** 按处理方式统计 */
+    private Map<String, BigDecimal> byDisposalMethod;
 }

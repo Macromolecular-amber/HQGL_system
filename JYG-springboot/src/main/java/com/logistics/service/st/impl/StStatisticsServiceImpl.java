@@ -200,11 +200,19 @@ public class StStatisticsServiceImpl implements StStatisticsService {
             byMealType.merge(mealType, r.getWasteWeight() == null ? BigDecimal.ZERO : r.getWasteWeight(), BigDecimal::add);
         }
 
+        // 按处理方式统计
+        Map<String, BigDecimal> byDisposalMethod = new LinkedHashMap<>();
+        for (StKitchenWaste r : records) {
+            String disposal = StringUtils.hasText(r.getDisposalMethod()) ? r.getDisposalMethod().toUpperCase() : "UNKNOWN";
+            byDisposalMethod.merge(disposal, r.getWasteWeight() == null ? BigDecimal.ZERO : r.getWasteWeight(), BigDecimal::add);
+        }
+
         WasteStatisticsVO vo = new WasteStatisticsVO();
         vo.setTotalWeight(totalWeight);
         vo.setAvgWeightPerDay(avg);
         vo.setTrendData(trendData);
         vo.setByMealType(byMealType);
+        vo.setByDisposalMethod(byDisposalMethod);
         return vo;
     }
 

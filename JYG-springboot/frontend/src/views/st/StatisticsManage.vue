@@ -44,22 +44,28 @@
       </el-card>
 
       <el-row :gutter="16" class="block-row">
-        <el-col :span="6">
-          <el-card shadow="never" class="stat-card">
+        <el-col :span="4">
+          <el-card shadow="never" class="stat-card waste-stat">
             <div class="stat-num">{{ wasteStat?.totalWeight ?? '-' }}</div>
             <div class="stat-label">总餐余量（kg）</div>
           </el-card>
         </el-col>
-        <el-col :span="6">
-          <el-card shadow="never" class="stat-card">
+        <el-col :span="4">
+          <el-card shadow="never" class="stat-card waste-stat">
             <div class="stat-num">{{ wasteStat?.avgWeightPerDay ?? '-' }}</div>
             <div class="stat-label">日均餐余量（kg）</div>
           </el-card>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-card shadow="never" class="chart-card">
             <template #header><span>按餐次分布</span></template>
             <div ref="wastePieRef" class="chart"></div>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="never" class="chart-card">
+            <template #header><span>按处理方式分布</span></template>
+            <div ref="wasteDisposalRef" class="chart"></div>
           </el-card>
         </el-col>
       </el-row>
@@ -303,6 +309,7 @@ const loadWasteStat = async () => {
     const params = { periodType: 'MONTH', startDate: daysAgo(30), endDate: todayStr() }
     wasteStat.value = await getWasteStatistics(params)
     renderWastePie(wasteStat.value)
+    renderWasteDisposal(wasteStat.value)
   } catch (e) {
     // 错误已由拦截器统一提示
   }
@@ -315,13 +322,62 @@ const renderWastePie = (stat) => {
   const data = Object.entries(byMeal).map(([k, v]) => ({ name: mealLabels[k] || k, value: Number(v) }))
   initChart('wastePie', wastePieRef, {
     tooltip: { trigger: 'item', formatter: '{b}: {c} kg ({d}%)' },
-    legend: { bottom: 0 },
+    legend: {
+      orient: 'vertical',
+      right: 8,
+      top: 'middle',
+      icon: 'circle',
+      itemWidth: 12,
+      itemHeight: 12,
+      textStyle: { fontSize: 16 },
+      formatter: (name) => {
+        const item = data.find((x) => x.name === name)
+        return `${name}  ${item ? item.value : 0}kg`
+      }
+    },
     series: [{
       type: 'pie',
-      radius: ['40%', '65%'],
-      center: ['50%', '45%'],
-      data,
-      label: { formatter: '{b}\n{c}kg' }
+      radius: ['40%', '62%'],
+      center: ['36%', '50%'],
+      startAngle: 90,
+      itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+      label: { show: false },
+      labelLine: { show: false },
+      data
+    }]
+  })
+}
+
+const wasteDisposalRef = ref()
+const renderWasteDisposal = (stat) => {
+  const byDisposal = stat?.byDisposalMethod || {}
+  const disposalLabels = { COMPOST: '堆肥', FEED: '饲料', WASTE: '废弃物' }
+  const data = Object.entries(byDisposal).map(([k, v]) => ({ name: disposalLabels[k] || k, value: Number(v) }))
+  initChart('wasteDisposal', wasteDisposalRef, {
+    color: ['#67c23a', '#e6a23c', '#909399'],
+    tooltip: { trigger: 'item', formatter: '{b}: {c} kg ({d}%)' },
+    legend: {
+      orient: 'vertical',
+      right: 8,
+      top: 'middle',
+      icon: 'circle',
+      itemWidth: 12,
+      itemHeight: 12,
+      textStyle: { fontSize: 16 },
+      formatter: (name) => {
+        const item = data.find((x) => x.name === name)
+        return `${name}  ${item ? item.value : 0}kg`
+      }
+    },
+    series: [{
+      type: 'pie',
+      radius: ['40%', '62%'],
+      center: ['36%', '50%'],
+      startAngle: 90,
+      itemStyle: { borderRadius: 6, borderColor: '#fff', borderWidth: 2 },
+      label: { show: false },
+      labelLine: { show: false },
+      data
     }]
   })
 }
@@ -422,6 +478,7 @@ watch(tabType, () => {
   nextTick(() => {
     if (tabType.value === 'waste') {
       renderWastePie(wasteStat.value)
+      renderWasteDisposal(wasteStat.value)
     } else if (tabType.value === 'consume') {
       renderConsumeCharts(consumeStat.value)
     } else {
@@ -469,6 +526,27 @@ watch(tabType, () => {
   margin-top: 8px;
   font-size: 13px;
   color: #909399;
+}
+
+/* 餐余统计卡片：内容在显示框内垂直水平居中，放大字体 */
+.waste-stat {
+  display: flex;
+  flex-direction: column;
+}
+.waste-stat :deep(.el-card__body) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.waste-stat .stat-num {
+  font-size: 46px;
+  line-height: 1.1;
+}
+.waste-stat .stat-label {
+  margin-top: 12px;
+  font-size: 16px;
 }
 
 .chart-card {
