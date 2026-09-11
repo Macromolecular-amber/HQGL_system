@@ -2,6 +2,7 @@ package com.logistics.dto.message;
 
 import lombok.Data;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
@@ -11,8 +12,10 @@ import java.util.List;
 @Data
 public class MessageSendRequest {
 
-    /** 接收人ID列表 */
-    @NotEmpty(message = "接收人不能为空")
+    /** 是否全体发送：true 时忽略 receiverIds，发送给所有启用用户 */
+    private Boolean sendAll;
+
+    /** 接收人ID列表（sendAll=false 时必填） */
     private List<Long> receiverIds;
 
     /** 标题 */
@@ -31,4 +34,12 @@ public class MessageSendRequest {
 
     /** 关联业务单号 */
     private String bizOrderNo;
+
+    /**
+     * 校验：全体发送或指定接收人，二者必居其一
+     */
+    @AssertTrue(message = "接收人不能为空")
+    public boolean isReceiversValid() {
+        return Boolean.TRUE.equals(sendAll) || (receiverIds != null && !receiverIds.isEmpty());
+    }
 }

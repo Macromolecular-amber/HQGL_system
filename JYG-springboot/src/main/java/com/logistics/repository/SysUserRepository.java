@@ -22,4 +22,10 @@ public interface SysUserRepository extends JpaRepository<SysUser, Long> {
      */
     @Query("SELECT r.roleCode FROM SysRole r JOIN SysUserRole ur ON r.id = ur.roleId WHERE ur.userId = :userId")
     List<String> findRolesByUserId(@Param("userId") Long userId);
+
+    /**
+     * 查询全部启用且未删除的用户（全体消息接收人）
+     */
+    @Query("SELECT u FROM SysUser u WHERE u.userStatus = 'ACTIVE' AND (u.isDeleted IS NULL OR u.isDeleted = false)")
+    List<SysUser> findActiveUsers();
 }

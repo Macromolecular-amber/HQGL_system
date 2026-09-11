@@ -69,7 +69,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional
     public void send(MessageSendRequest request) {
-        if (request.getReceiverIds() == null || request.getReceiverIds().isEmpty()) {
+        // 全体发送：忽略接收人列表，改为查所有启用用户
+        List<Long> receiverIds = request.getReceiverIds();
+        if (Boolean.TRUE.equals(request.getSendAll())) {
+            receiverIds = sysUserRepository.findActiveUsers()
+                    .stream().map(SysUser::getId).collect(Collectors.toList());
+        }
+        if (receiverIds == null || receiverIds.isEmpty()) {
             throw new BusinessException("接收人不能为空");
         }
         if (!StringUtils.hasText(request.getTitle())) {
@@ -82,7 +88,7 @@ public class MessageServiceImpl implements MessageService {
         }
         Long currentUserId = resolveCurrentUserId();
         OffsetDateTime now = OffsetDateTime.now();
-        for (Long receiverId : request.getReceiverIds()) {
+        for (Long receiverId : receiverIds) {
             SysMessage message = new SysMessage();
             message.setReceiverId(receiverId);
             message.setSenderId(currentUserId); // 0 表示系统发送

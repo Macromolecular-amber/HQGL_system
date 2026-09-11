@@ -180,6 +180,12 @@ const routes = [
         meta: { title: '消息中心' }
       },
       {
+        path: '/system/broadcast',
+        name: 'BroadcastMessage',
+        component: () => import('../views/system/BroadcastMessage.vue'),
+        meta: { title: '发布全体消息', roles: ['ADMIN'] }
+      },
+      {
         path: '/system/log',
         name: 'LogQuery',
         component: () => import('../views/system/LogQuery.vue'),

@@ -94,6 +94,7 @@ export const allMenus = [
     icon: 'Document',
     children: [
       { path: '/message', title: '消息中心', roles: R.MSG },
+      { path: '/system/broadcast', title: '发布全体消息', roles: R.LOG },
       { path: '/system/log', title: '操作日志', roles: R.LOG }
     ]
   }
