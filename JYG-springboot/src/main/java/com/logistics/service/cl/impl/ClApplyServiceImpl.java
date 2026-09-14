@@ -1,5 +1,6 @@
 package com.logistics.service.cl.impl;
 
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.cl.ApplyAuditRequest;
@@ -85,6 +86,7 @@ public class ClApplyServiceImpl implements ClApplyService {
     private final SysUnitRepository sysUnitRepository;
     private final ClVehicleService clVehicleService;
     private final MessageNotifier messageNotifier;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -148,6 +150,7 @@ public class ClApplyServiceImpl implements ClApplyService {
         if (!STATUS_PENDING.equals(order.getApplyStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(order.getApplicantId());
 
         OffsetDateTime now = OffsetDateTime.now();
         String result = request.getAuditResult();

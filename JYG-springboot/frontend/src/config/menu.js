@@ -5,35 +5,39 @@
  */
 const R = {
   // 公物仓
-  GC_APPLY: ['ADMIN', 'BIZ_ADMIN', 'WAREHOUSE'],                       // 资产入仓
+  GC_APPLY: ['ADMIN', 'BIZ_ADMIN', 'WAREHOUSE', 'USER', 'DIRECTOR'],     // 资产入仓（USER申请，DIRECTOR审批）
   GC_LIST: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'WAREHOUSE', 'USER'],    // 资产管理
-  GC_BORROW: ['ADMIN', 'BIZ_ADMIN', 'DEPT_MANAGER', 'USER'],           // 借用申请
-  GC_WH: ['ADMIN', 'BIZ_ADMIN', 'WAREHOUSE'],                          // 归还验收/调剂/处置
+  GC_BORROW: ['ADMIN', 'BIZ_ADMIN', 'DEPT_MANAGER', 'USER', 'WAREHOUSE', 'DIRECTOR'],  // 借用申请（+审批角色）
+  GC_WH: ['ADMIN', 'BIZ_ADMIN', 'WAREHOUSE', 'USER', 'DIRECTOR'],      // 归还验收/调剂/处置（+USER申请/DIRECTOR审批）
   // 公务用车
-  CL_VEHICLE: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'WAREHOUSE', 'DRIVER'],
-  CL_APPLY: ['ADMIN', 'BIZ_ADMIN', 'DEPT_MANAGER', 'USER'],
-  CL_DISPATCH: ['ADMIN', 'BIZ_ADMIN'],
+  CL_VEHICLE: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'WAREHOUSE'],       // 车辆管理（车辆档案管理页，司机不可见；费用/维修页经接口取车）
+  CL_APPLY: ['ADMIN', 'BIZ_ADMIN', 'DEPT_MANAGER', 'USER', 'DIRECTOR', 'WAREHOUSE'],  // 用车申请（+DIRECTOR审批）
+  CL_DISPATCH: ['ADMIN', 'BIZ_ADMIN', 'WAREHOUSE', 'DRIVER'],          // 车辆调度（+WAREHOUSE派车/DRIVER查看自己的任务）
   CL_TRACK: ['ADMIN', 'DIRECTOR'],
-  CL_COST: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DRIVER'],
+  CL_COST: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DRIVER', 'WAREHOUSE'],   // 费用管理（+WAREHOUSE登记）
   CL_SUMMARY: ['ADMIN', 'DIRECTOR'],
-  CL_REPAIR: ['ADMIN', 'BIZ_ADMIN', 'DRIVER'],
+  CL_REPAIR: ['ADMIN', 'BIZ_ADMIN', 'DRIVER', 'WAREHOUSE', 'DIRECTOR', 'USER'],  // 维修保养（+审批角色/申请）
   // 公寓
   GY_ROOM: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DEPT_MANAGER', 'WAREHOUSE'],
-  GY_OCCUPANT: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DEPT_MANAGER', 'USER'],
-  GY_REPAIR: ['ADMIN', 'BIZ_ADMIN', 'DEPT_MANAGER'],
-  GY_CLEANING: ['ADMIN', 'DEPT_MANAGER', 'USER', 'CLEANER'],
+  GY_OCCUPANT: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DEPT_MANAGER', 'USER', 'WAREHOUSE'],  // 入住管理（+WAREHOUSE）
+  GY_REPAIR: ['ADMIN', 'BIZ_ADMIN', 'DEPT_MANAGER', 'WAREHOUSE', 'DIRECTOR', 'USER'],    // 维修管理（+审批/申请）
+  GY_CLEANING: ['ADMIN', 'DEPT_MANAGER', 'USER', 'CLEANER', 'BIZ_ADMIN', 'WAREHOUSE', 'DIRECTOR'],  // 保洁管理（+审批角色）
   // 食堂
-  ST_MATERIAL: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DEPT_MANAGER'],
-  ST_PURCHASE: ['ADMIN', 'BIZ_ADMIN'],
-  ST_INVENTORY: ['ADMIN', 'BIZ_ADMIN'],
-  ST_MEAL_RESERVE: ['ADMIN', 'DEPT_MANAGER', 'USER'],
-  ST_MEAL_STATS: ['ADMIN', 'DIRECTOR'],
-  ST_STATS: ['ADMIN', 'DIRECTOR'],
-  PAY_CARD: ['ADMIN', 'USER'],
+  ST_MATERIAL: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DEPT_MANAGER', 'WAREHOUSE'],  // 物资管理（+WAREHOUSE）
+  ST_PURCHASE: ['ADMIN', 'BIZ_ADMIN', 'WAREHOUSE'],                      // 采购管理（+WAREHOUSE）
+  ST_INVENTORY: ['ADMIN', 'BIZ_ADMIN', 'WAREHOUSE'],                     // 库存管理（+WAREHOUSE）
+  ST_MEAL_RESERVE: ['ADMIN', 'DEPT_MANAGER', 'USER', 'BIZ_ADMIN'],       // 预约订餐（+BIZ_ADMIN）
+  ST_MEAL_STATS: ['ADMIN', 'DIRECTOR', 'BIZ_ADMIN', 'WAREHOUSE'],        // 备餐统计（+统计角色）
+  ST_STATS: ['ADMIN', 'DIRECTOR', 'BIZ_ADMIN', 'WAREHOUSE'],             // 统计分析（+统计角色）
+  PAY_CARD: ['ADMIN', 'USER', 'BIZ_ADMIN'],                              // 餐卡管理（+BIZ_ADMIN退款）
   // 系统管理
   MSG: ['ADMIN', 'BIZ_ADMIN', 'DIRECTOR', 'DEPT_MANAGER', 'WAREHOUSE', 'USER', 'DRIVER', 'CLEANER'],
-  LOG: ['ADMIN']
+  LOG: ['ADMIN', 'DIRECTOR'],                                             // 操作日志（+DIRECTOR，与手册一致）
+  BROADCAST: ['ADMIN']                                                    // 发布全体消息（仅系统管理员）
 }
+
+/** 导出权限常量，供路由守卫 / 首页快捷入口复用（单一数据源） */
+export { R }
 
 export const allMenus = [
   {
@@ -94,7 +98,7 @@ export const allMenus = [
     icon: 'Document',
     children: [
       { path: '/message', title: '消息中心', roles: R.MSG },
-      { path: '/system/broadcast', title: '发布全体消息', roles: R.LOG },
+      { path: '/system/broadcast', title: '发布全体消息', roles: R.BROADCAST },
       { path: '/system/log', title: '操作日志', roles: R.LOG }
     ]
   }

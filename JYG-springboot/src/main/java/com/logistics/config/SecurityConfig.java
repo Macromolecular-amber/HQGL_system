@@ -18,6 +18,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -50,11 +52,25 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .antMatchers("/api/auth/login", "/actuator/health", "/error").permitAll()
                 .anyRequest().authenticated()
             .and()
+            // 未认证/无效 token 统一返回 401（前端据此跳转登录页），而不是默认 403
+            .exceptionHandling()
+                .authenticationEntryPoint((request, response, authException) ->
+                        writeUnauthorized(response))
+            .and()
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic().disable()
             .formLogin().disable();
 
         return http.build();
+    }
+
+    /**
+     * 输出 401 统一响应体（与 Result 结构一致，便于前端统一解包）
+     */
+    private void writeUnauthorized(HttpServletResponse response) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("{\"code\":401,\"message\":\"未登录或登录已过期，请重新登录\",\"data\":null}");
     }
 
     /**

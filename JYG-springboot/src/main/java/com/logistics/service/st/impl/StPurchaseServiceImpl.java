@@ -1,5 +1,6 @@
 package com.logistics.service.st.impl;
 
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.st.PurchaseAcceptRequest;
@@ -88,6 +89,7 @@ public class StPurchaseServiceImpl implements StPurchaseService {
     private final SysUserRepository sysUserRepository;
     private final StInventoryService stInventoryService;
     private final MessageNotifier messageNotifier;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -153,6 +155,7 @@ public class StPurchaseServiceImpl implements StPurchaseService {
         if (!STATUS_DRAFT.equalsIgnoreCase(order.getOrderStatus())) {
             throw new BusinessException("仅草稿状态的采购单可审批");
         }
+        auditGuard.assertNotSelfAudit(order.getCreateBy());
         String result = request.getAuditResult() == null ? null : request.getAuditResult().toUpperCase();
         OffsetDateTime now = OffsetDateTime.now();
         order.setAuditUserId(resolveCurrentUserId());

@@ -65,7 +65,7 @@ public class ClDispatchController {
     /**
      * 分页查询调度单
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/page")
     public Result<PageResult<DispatchVO>> page(DispatchPageQuery query) {
         return Result.success(clDispatchService.queryPage(query));
@@ -74,7 +74,7 @@ public class ClDispatchController {
     /**
      * 调度单详情
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/{id}")
     public Result<DispatchVO> detail(@PathVariable Long id) {
         return Result.success(clDispatchService.getDetail(id));
@@ -83,7 +83,7 @@ public class ClDispatchController {
     /**
      * 根据申请ID查询派单记录
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR"})
+    @RequiresRoles({"USER","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DRIVER"})
     @GetMapping("/by-apply/{applyId}")
     public Result<List<DispatchVO>> byApply(@PathVariable Long applyId) {
         return Result.success(clDispatchService.getByApplyId(applyId));

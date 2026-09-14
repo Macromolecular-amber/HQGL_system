@@ -2,6 +2,7 @@ package com.logistics.service.cl.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.cl.PartsItemDTO;
@@ -99,6 +100,7 @@ public class ClRepairServiceImpl implements ClRepairService {
     private final ClCostDetailRepository costDetailRepository;
     private final SysUserRepository sysUserRepository;
     private final ObjectMapper objectMapper;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -141,6 +143,7 @@ public class ClRepairServiceImpl implements ClRepairService {
         if (!STATUS_PENDING.equals(order.getOrderStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(order.getCreateBy());
         OffsetDateTime now = OffsetDateTime.now();
         if (AUDIT_PASS.equals(request.getAuditResult())) {
             order.setOrderStatus(STATUS_APPROVED);

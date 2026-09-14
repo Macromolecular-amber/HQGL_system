@@ -2,6 +2,7 @@ package com.logistics.service.gy.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.gy.PartsItemDTO;
@@ -89,6 +90,7 @@ public class GyRepairServiceImpl implements GyRepairService {
     private final GyRoomRepository roomRepository;
     private final SysUserRepository sysUserRepository;
     private final ObjectMapper objectMapper;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -139,6 +141,7 @@ public class GyRepairServiceImpl implements GyRepairService {
         if (!STATUS_PENDING.equals(order.getOrderStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(order.getApplicantId());
         OffsetDateTime now = OffsetDateTime.now();
         if (AUDIT_PASS.equals(request.getAuditResult())) {
             order.setOrderStatus(STATUS_APPROVED);

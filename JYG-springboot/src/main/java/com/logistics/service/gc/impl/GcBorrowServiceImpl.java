@@ -1,5 +1,6 @@
 package com.logistics.service.gc.impl;
 
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.gc.BorrowApplyRequest;
@@ -73,6 +74,7 @@ public class GcBorrowServiceImpl implements GcBorrowService {
     private final SysUserRepository sysUserRepository;
     private final SysUnitRepository sysUnitRepository;
     private final MessageNotifier messageNotifier;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -149,6 +151,7 @@ public class GcBorrowServiceImpl implements GcBorrowService {
         if (!STATUS_PENDING.equals(order.getOrderStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(order.getApplicantId());
 
         OffsetDateTime now = OffsetDateTime.now();
         String result = request.getAuditResult();

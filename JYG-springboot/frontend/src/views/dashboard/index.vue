@@ -37,9 +37,9 @@
       </div>
     </div>
 
-    <!-- 快捷入口 -->
+    <!-- 快捷入口（按当前账号权限过滤） -->
     <div class="quick-entries">
-      <div class="entry-item" v-for="entry in quickEntries" :key="entry.key" @click="handleEntry(entry.path)">
+      <div class="entry-item" v-for="entry in visibleQuickEntries" :key="entry.key" @click="handleEntry(entry.path)">
         <el-icon :size="32"><component :is="entry.icon" /></el-icon>
         <span>{{ entry.label }}</span>
       </div>
@@ -124,9 +124,12 @@
 <script>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import * as echarts from 'echarts'
 import { getStatistics, getTodos, getMessages, getTrend } from '@/api/dashboard'
 import { getUnreadCount, getLatestMessages } from '@/api/message'
+import { R } from '@/config/menu'
+import { hasRole } from '@/utils/permission'
 
 export default {
   name: 'Dashboard',
@@ -151,17 +154,22 @@ export default {
       })
     })
 
-    // 快捷入口
+    // 快捷入口（roles 与 menu.js 权限一致）
     const quickEntries = [
-      { key: 'gc-apply', label: '资产入仓', icon: 'Box', path: '/gc/asset-apply' },
-      { key: 'car-apply', label: '用车申请', icon: 'Van', path: '/cl/apply' },
-      { key: 'room-apply', label: '公寓申请', icon: 'OfficeBuilding', path: '/gy/occupant' },
-      { key: 'meal-reserve', label: '预约订餐', icon: 'Dish', path: '/st/meal-reserve' },
-      { key: 'gc-borrow', label: '借用申请', icon: 'ShoppingTrolley', path: '/gc/borrow-apply' },
-      { key: 'room-query', label: '房间查询', icon: 'House', path: '/gy/room' },
-      { key: 'repair', label: '报修服务', icon: 'Tools', path: '/cl/repair' },
-      { key: 'message', label: '消息中心', icon: 'Bell', path: '/message' },
+      { key: 'gc-apply', label: '资产入仓', icon: 'Box', path: '/gc/asset-apply', roles: R.GC_APPLY },
+      { key: 'car-apply', label: '用车申请', icon: 'Van', path: '/cl/apply', roles: R.CL_APPLY },
+      { key: 'room-apply', label: '公寓申请', icon: 'OfficeBuilding', path: '/gy/occupant', roles: R.GY_OCCUPANT },
+      { key: 'meal-reserve', label: '预约订餐', icon: 'Dish', path: '/st/meal-reserve', roles: R.ST_MEAL_RESERVE },
+      { key: 'gc-borrow', label: '借用申请', icon: 'ShoppingTrolley', path: '/gc/borrow-apply', roles: R.GC_BORROW },
+      { key: 'room-query', label: '房间查询', icon: 'House', path: '/gy/room', roles: R.GY_ROOM },
+      { key: 'repair', label: '报修服务', icon: 'Tools', path: '/cl/repair', roles: R.CL_REPAIR },
+      { key: 'message', label: '消息中心', icon: 'Bell', path: '/message', roles: R.MSG },
     ]
+
+    // 仅展示当前账号有权限的快捷入口
+    const visibleQuickEntries = computed(() =>
+      quickEntries.filter((entry) => hasRole(entry.roles))
+    )
 
     // 统计数据
     const statistics = ref([])
@@ -295,8 +303,13 @@ export default {
       if (chartInstance) chartInstance.resize()
     }
 
-    // 快捷入口点击
+    // 快捷入口点击：二次校验权限，无权限时提示"权限不足"且不跳转
     const handleEntry = (path) => {
+      const entry = quickEntries.find((e) => e.path === path)
+      if (entry && entry.roles && !hasRole(entry.roles)) {
+        ElMessage.warning('权限不足，无法访问该功能')
+        return
+      }
       router.push(path)
     }
 
@@ -352,7 +365,7 @@ export default {
     return {
       userInfo,
       currentDate,
-      quickEntries,
+      visibleQuickEntries,
       statistics,
       todos,
       messages,

@@ -2,6 +2,7 @@ package com.logistics.service.gy.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.gy.CheckoutAcceptRequest;
@@ -100,6 +101,7 @@ public class GyOccupantServiceImpl implements GyOccupantService {
     private final SysUserRepository sysUserRepository;
     private final MessageNotifier messageNotifier;
     private final ObjectMapper objectMapper;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -177,6 +179,7 @@ public class GyOccupantServiceImpl implements GyOccupantService {
         if (!STATUS_PENDING.equalsIgnoreCase(occupant.getOccupantStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(occupant.getCreateBy());
         OffsetDateTime now = OffsetDateTime.now();
         if (AUDIT_PASS.equals(request.getAuditResult())) {
             occupant.setOccupantStatus(STATUS_ACTIVE);

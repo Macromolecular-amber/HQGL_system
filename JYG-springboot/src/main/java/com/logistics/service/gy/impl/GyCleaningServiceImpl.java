@@ -1,5 +1,6 @@
 package com.logistics.service.gy.impl;
 
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.gy.CleaningAcceptRequest;
@@ -80,6 +81,7 @@ public class GyCleaningServiceImpl implements GyCleaningService {
     private final GyCleaningOrderRepository cleaningOrderRepository;
     private final GyRoomRepository roomRepository;
     private final SysUserRepository sysUserRepository;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -127,6 +129,7 @@ public class GyCleaningServiceImpl implements GyCleaningService {
         if (!STATUS_PENDING.equals(order.getOrderStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(order.getApplicantId());
         OffsetDateTime now = OffsetDateTime.now();
         if (AUDIT_PASS.equals(request.getAuditResult())) {
             order.setOrderStatus(STATUS_APPROVED);

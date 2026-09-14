@@ -1,5 +1,6 @@
 package com.logistics.service.cl.impl;
 
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.cl.CostAuditRequest;
@@ -90,6 +91,7 @@ public class ClCostServiceImpl implements ClCostService {
     private final ClCostDetailRepository costDetailRepository;
     private final ClVehicleArchiveRepository vehicleArchiveRepository;
     private final SysUserRepository sysUserRepository;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -164,6 +166,7 @@ public class ClCostServiceImpl implements ClCostService {
         if (!STATUS_PENDING.equals(cost.getApprovalStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(cost.getCreateBy());
         OffsetDateTime now = OffsetDateTime.now();
         if (AUDIT_PASS.equals(request.getAuditResult())) {
             cost.setApprovalStatus(STATUS_APPROVED);

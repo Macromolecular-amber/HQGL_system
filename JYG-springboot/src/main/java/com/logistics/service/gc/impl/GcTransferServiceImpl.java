@@ -1,5 +1,6 @@
 package com.logistics.service.gc.impl;
 
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.gc.DisposeApplyRequest;
@@ -96,6 +97,7 @@ public class GcTransferServiceImpl implements GcTransferService {
     private final GcAssetCardRepository gcAssetCardRepository;
     private final SysUnitRepository sysUnitRepository;
     private final SysUserRepository sysUserRepository;
+    private final AuditGuard auditGuard;
 
     @Override
     @Transactional
@@ -189,6 +191,7 @@ public class GcTransferServiceImpl implements GcTransferService {
         if (!STATUS_PENDING.equals(order.getOrderStatus())) {
             throw new BusinessException("当前状态不可审批");
         }
+        auditGuard.assertNotSelfAudit(order.getCreateBy());
 
         OffsetDateTime now = OffsetDateTime.now();
         String result = auditResult;

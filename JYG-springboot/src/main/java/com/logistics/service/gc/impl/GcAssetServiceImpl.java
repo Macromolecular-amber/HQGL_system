@@ -1,5 +1,6 @@
 package com.logistics.service.gc.impl;
 
+import com.logistics.common.AuditGuard;
 import com.logistics.common.BusinessException;
 import com.logistics.common.PageResult;
 import com.logistics.dto.gc.AssetApplyRequest;
@@ -76,6 +77,7 @@ public class GcAssetServiceImpl implements GcAssetService {
     private final SysUnitRepository sysUnitRepository;
     private final SysUserRepository sysUserRepository;
     private final MessageNotifier messageNotifier;
+    private final AuditGuard auditGuard;
 
     @Override
     public AssetVO apply(AssetApplyRequest request) {
@@ -128,6 +130,7 @@ public class GcAssetServiceImpl implements GcAssetService {
         if (!STATUS_PENDING.equals(card.getAssetStatus())) {
             throw new BusinessException("当前状态不可审核");
         }
+        auditGuard.assertNotSelfAudit(card.getCreateBy());
 
         OffsetDateTime now = OffsetDateTime.now();
         String result = request.getAuditResult();

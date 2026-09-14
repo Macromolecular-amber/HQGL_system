@@ -21,7 +21,7 @@
         <el-form-item>
           <el-button type="primary" @click="handleQuery">查询</el-button>
           <el-button @click="handleReset">重置</el-button>
-          <el-button type="primary" plain @click="openApply">新增保洁</el-button>
+          <el-button v-hasRole="['USER', 'BIZ_ADMIN', 'DEPT_MANAGER']" type="primary" plain @click="openApply">新增保洁</el-button>
         </el-form-item>
       </el-form>
     </el-card>

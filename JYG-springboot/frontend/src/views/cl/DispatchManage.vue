@@ -1,7 +1,7 @@
 <template>
   <div class="dispatch-manage-page">
-    <!-- 待派车申请列表 -->
-    <el-card shadow="never" class="pending-card">
+    <!-- 待派车申请（仅调度操作员可见） -->
+    <el-card v-if="isDispatchOperator" shadow="never" class="pending-card">
       <template #header>
         <span class="card-title">待派车申请</span>
       </template>
@@ -19,7 +19,7 @@
         <el-table-column prop="applicantName" label="申请人" width="100" show-overflow-tooltip />
         <el-table-column label="操作" width="90" fixed="right">
           <template #default="{ row }">
-            <el-button link type="primary" @click="openDispatch(row)">派车</el-button>
+            <el-button v-hasRole="['BIZ_ADMIN', 'WAREHOUSE']" link type="primary" @click="openDispatch(row)">派车</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,6 +59,7 @@
           <template #default="{ row }">
             <el-button link type="primary" @click="showDetail(row)">详情</el-button>
             <el-button
+              v-hasRole="['BIZ_ADMIN', 'WAREHOUSE']"
               v-if="row.dispatchStatus === 'WAITING' || row.dispatchStatus === 'ONGOING'"
               link
               type="warning"
@@ -223,10 +224,19 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getApplyPage, getAvailableVehicles, dispatchCar, returnCar, getDispatchPage, getDispatchDetail } from '@/api/cl'
 import { getDrivers } from '@/api/sys'
+
+/** 当前登录用户与角色 */
+const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}')
+const roles = userInfo.roles || []
+
+/** 调度操作员（可派车/归还）：ADMIN 通吃 + BIZ_ADMIN/WAREHOUSE */
+const isDispatchOperator = computed(() =>
+  roles.includes('ADMIN') || roles.includes('BIZ_ADMIN') || roles.includes('WAREHOUSE')
+)
 
 /** 调度状态映射 */
 const statusMap = {
@@ -245,6 +255,8 @@ const pendingLoading = ref(false)
 const pendingList = ref([])
 
 const loadPendingList = async () => {
+  // 仅调度操作员加载（待派车申请接口不含 DRIVER，避免 403 提示）
+  if (!isDispatchOperator.value) return
   pendingLoading.value = true
   try {
     const res = await getApplyPage({ applyStatus: 'APPROVED', page: 1, size: 50 })
@@ -265,7 +277,12 @@ const query = reactive({ page: 1, size: 10 })
 const loadDispatchList = async () => {
   dispatchLoading.value = true
   try {
-    const res = await getDispatchPage({ page: query.page, size: query.size })
+    const params = { page: query.page, size: query.size }
+    // 司机角色仅查看自己的派单任务
+    if (!isDispatchOperator.value && roles.includes('DRIVER')) {
+      params.driverId = userInfo.id
+    }
+    const res = await getDispatchPage(params)
     dispatchList.value = res.data || []
     total.value = res.total || 0
   } catch (e) {
@@ -422,7 +439,9 @@ const showDetail = async (row) => {
 }
 
 onMounted(() => {
-  loadPendingList()
+  if (isDispatchOperator.value) {
+    loadPendingList()
+  }
   loadDispatchList()
 })
 </script>

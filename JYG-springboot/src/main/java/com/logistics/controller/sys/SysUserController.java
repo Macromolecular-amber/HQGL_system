@@ -68,7 +68,9 @@ public class SysUserController {
 
     /**
      * 获取所有驾驶员（角色包含 DRIVER）列表
+     * 方法级注解覆盖类级 ADMIN：放开给车辆调度使用角色（BIZ_ADMIN/WAREHOUSE）
      */
+    @RequiresRoles({"ADMIN","BIZ_ADMIN","WAREHOUSE"})
     @GetMapping("/drivers")
     public Result<List<DriverVO>> drivers() {
         SysRole driverRole = sysRoleRepository.findByRoleCode(ROLE_DRIVER).orElse(null);
@@ -91,7 +93,9 @@ public class SysUserController {
 
     /**
      * 获取所有保洁员（角色包含 CLEANER）列表
+     * 方法级注解覆盖类级 ADMIN：放开给保洁派单使用角色（BIZ_ADMIN/WAREHOUSE/DIRECTOR/DEPT_MANAGER）
      */
+    @RequiresRoles({"ADMIN","BIZ_ADMIN","WAREHOUSE","DIRECTOR","DEPT_MANAGER"})
     @GetMapping("/cleaners")
     public Result<List<DriverVO>> cleaners() {
         SysRole cleanerRole = sysRoleRepository.findByRoleCode(ROLE_CLEANER).orElse(null);

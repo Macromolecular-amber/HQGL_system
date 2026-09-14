@@ -34,9 +34,9 @@ public class GyCleaningController {
     private final GyCleaningService gyCleaningService;
 
     /**
-     * 提交保洁申请
+     * 提交保洁申请（保洁员是执行者而非申请人，故不含 CLEANER）
      */
-    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER","CLEANER"})
+    @RequiresRoles({"USER","BIZ_ADMIN","DEPT_MANAGER"})
     @PostMapping("/apply")
     @Log(module="GY", operation="提交保洁申请", type="ADD")
     public Result<CleaningVO> apply(@Valid @RequestBody CleaningApplyRequest request) {
