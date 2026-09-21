@@ -1,0 +1,204 @@
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^u--(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^up-(.*)": "uview-plus/components/u-$1/u-$1.vue",
+      "^u-([^-].*)": "uview-plus/components/u-$1/u-$1.vue"
+    }
+  },
+  "pages": [
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/cl/apply/apply",
+      "style": {
+        "navigationBarTitleText": "用车申请"
+      }
+    },
+    {
+      "path": "pages/gc/borrow/borrow",
+      "style": {
+        "navigationBarTitleText": "借用申请"
+      }
+    },
+    {
+      "path": "pages/st/meal/meal",
+      "style": {
+        "navigationBarTitleText": "预约订餐"
+      }
+    },
+    {
+      "path": "pages/gy/occupant/occupant",
+      "style": {
+        "navigationBarTitleText": "公寓申请"
+      }
+    },
+    {
+      "path": "pages/gc/asset_apply/asset_apply",
+      "style": {
+        "navigationBarTitleText": "资产入仓"
+      }
+    },
+    {
+      "path": "pages/gc/return_apply/return_apply",
+      "style": {
+        "navigationBarTitleText": "资产归还"
+      }
+    },
+    {
+      "path": "pages/gc/transfer_apply/transfer_apply",
+      "style": {
+        "navigationBarTitleText": "资产调剂"
+      }
+    },
+    {
+      "path": "pages/gc/dispose_apply/dispose_apply",
+      "style": {
+        "navigationBarTitleText": "资产处置"
+      }
+    },
+    {
+      "path": "pages/cl/vehicle/vehicle",
+      "style": {
+        "navigationBarTitleText": "车辆管理"
+      }
+    },
+    {
+      "path": "pages/cl/repair/repair",
+      "style": {
+        "navigationBarTitleText": "维修保养"
+      }
+    },
+    {
+      "path": "pages/cl/dispatch/dispatch",
+      "style": {
+        "navigationBarTitleText": "车辆调度"
+      }
+    },
+    {
+      "path": "pages/cl/cost/cost",
+      "style": {
+        "navigationBarTitleText": "费用管理"
+      }
+    },
+    {
+      "path": "pages/cl/cost_summary/cost_summary",
+      "style": {
+        "navigationBarTitleText": "单车台账"
+      }
+    },
+    {
+      "path": "pages/cl/track/track",
+      "style": {
+        "navigationBarTitleText": "运行监控"
+      }
+    },
+    {
+      "path": "pages/gy/room/room",
+      "style": {
+        "navigationBarTitleText": "公寓房间"
+      }
+    },
+    {
+      "path": "pages/gy/cleaning/cleaning",
+      "style": {
+        "navigationBarTitleText": "保洁管理"
+      }
+    },
+    {
+      "path": "pages/gy/repair/repair",
+      "style": {
+        "navigationBarTitleText": "公寓维修"
+      }
+    },
+    {
+      "path": "pages/st/material/material",
+      "style": {
+        "navigationBarTitleText": "物资管理"
+      }
+    },
+    {
+      "path": "pages/st/purchase/purchase",
+      "style": {
+        "navigationBarTitleText": "采购管理"
+      }
+    },
+    {
+      "path": "pages/st/inventory/inventory",
+      "style": {
+        "navigationBarTitleText": "库存管理"
+      }
+    },
+    {
+      "path": "pages/st/statistics/statistics",
+      "style": {
+        "navigationBarTitleText": "统计分析"
+      }
+    },
+    {
+      "path": "pages/system/broadcast/broadcast",
+      "style": {
+        "navigationBarTitleText": "发布全体消息"
+      }
+    },
+    {
+      "path": "pages/system/log/log",
+      "style": {
+        "navigationBarTitleText": "操作日志"
+      }
+    },
+    {
+      "path": "pages/dashboard/todo/todo",
+      "style": {
+        "navigationBarTitleText": "待办中心"
+      }
+    },
+    {
+      "path": "pages/dashboard/leadership/leadership",
+      "style": {
+        "navigationBarTitleText": "领导驾驶舱"
+      }
+    },
+    {
+      "path": "pages/gc/asset_list/asset_list",
+      "style": {
+        "navigationBarTitleText": "资产管理"
+      }
+    },
+    {
+      "path": "pages/pay/card/card",
+      "style": {
+        "navigationBarTitleText": "餐卡管理"
+      }
+    },
+    {
+      "path": "pages/st/meal_statistics/meal_statistics",
+      "style": {
+        "navigationBarTitleText": "备餐统计"
+      }
+    },
+    {
+      "path": "pages/message/message",
+      "style": {
+        "navigationBarTitleText": "消息中心"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "机关事务后勤APP",
+    "navigationBarBackgroundColor": "#409EFF",
+    "backgroundColor": "#F5F7FA"
+  }
+}
